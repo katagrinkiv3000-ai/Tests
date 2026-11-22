@@ -21,14 +21,14 @@
       --err: #dc2626; --err-soft: rgba(220,38,38,0.12);
       --star: #d97706; --border: rgba(0,0,0,0.08);
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, sans-serif; }
     body { background: var(--bg); color: var(--text); padding: 12px 14px 40px; }
     .wrap { max-width: 640px; margin: 0 auto; }
     .header { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 14px; }
     .tabs { display: flex; gap: 6px; overflow-x: auto; }
-    .tab { background: var(--card); color: var(--muted); border: 1px solid var(--border); padding: 7px 14px; border-radius: 99px; font-size: 13px; font-weight: 600; white-space: nowrap; cursor: pointer; }
+    .tab { background: var(--card); color: var(--muted); border: 1px solid var(--border); padding: 7px 14px; border-radius: 99px; font-size: 13px; font-weight: 600; white-space: nowrap; }
     .tab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
-    .theme-btn { background: var(--card); color: var(--text); border: 1px solid var(--border); width: 34px; height: 34px; border-radius: 50%; font-size: 16px; cursor: pointer; flex-shrink: 0; }
+    .theme-btn { background: var(--card); color: var(--text); border: 1px solid var(--border); width: 36px; height: 36px; border-radius: 50%; font-size: 16px; flex-shrink: 0; }
     .card { background: var(--card); border-radius: 18px; padding: 16px; margin-bottom: 12px; border: 1px solid var(--border); }
     h1 { font-size: 19px; font-weight: 700; margin-bottom: 14px; }
     .stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-bottom: 16px; }
@@ -37,21 +37,21 @@
     .stat span { font-size: 11px; color: var(--muted); }
     .label { font-size: 11px; color: var(--muted); font-weight: 700; text-transform: uppercase; margin-bottom: 8px; }
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
-    .pill { background: var(--bg); color: var(--text); border: 1px solid var(--border); padding: 10px; border-radius: 12px; font-size: 13px; font-weight: 600; cursor: pointer; }
+    .pill { background: var(--bg); color: var(--text); border: 1px solid var(--border); padding: 10px; border-radius: 12px; font-size: 13px; font-weight: 600; }
     .pill.active { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
     .count-row { display: flex; gap: 8px; margin-bottom: 16px; }
     .count-input { width: 76px; background: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: 12px; padding: 9px; font-size: 14px; font-weight: 700; text-align: center; }
-    .mini-btn { background: var(--bg); color: var(--text); border: 1px solid var(--border); padding: 9px 13px; border-radius: 12px; font-size: 13px; font-weight: 600; cursor: pointer; }
-    .btn-main { width: 100%; background: var(--accent); color: #fff; border: none; padding: 13px; border-radius: 14px; font-size: 15px; font-weight: 700; cursor: pointer; }
-    .btn-sub { width: 100%; background: transparent; color: var(--muted); border: 1px solid var(--border); padding: 11px; border-radius: 14px; font-size: 13px; font-weight: 600; cursor: pointer; margin-top: 8px; }
+    .mini-btn { background: var(--bg); color: var(--text); border: 1px solid var(--border); padding: 9px 13px; border-radius: 12px; font-size: 13px; font-weight: 600; }
+    .btn-main { width: 100%; background: var(--accent); color: #fff; border: none; padding: 13px; border-radius: 14px; font-size: 15px; font-weight: 700; }
+    .btn-sub { width: 100%; background: transparent; color: var(--muted); border: 1px solid var(--border); padding: 11px; border-radius: 14px; font-size: 13px; font-weight: 600; margin-top: 8px; }
     .sticky { position: sticky; top: 8px; z-index: 20; background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 10px 14px; margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center; }
     .q-head { display: flex; justify-content: space-between; margin-bottom: 10px; }
     .q-num { font-size: 12px; font-weight: 700; color: var(--accent); background: var(--accent-soft); padding: 3px 8px; border-radius: 6px; }
     .q-title { font-size: 15px; font-weight: 600; line-height: 1.4; margin-bottom: 12px; white-space: pre-line; }
-    .star { font-size: 20px; cursor: pointer; color: var(--muted); }
+    .star { font-size: 22px; color: var(--muted); padding: 0 4px; }
     .star.on { color: var(--star); }
     .opts { display: flex; flex-direction: column; gap: 8px; }
-    .opt { width: 100%; text-align: left; background: var(--bg); color: var(--text); border: 1px solid var(--border); padding: 11px 13px; border-radius: 11px; font-size: 13.5px; cursor: pointer; }
+    .opt { width: 100%; text-align: left; background: var(--bg); color: var(--text); border: 1px solid var(--border); padding: 11px 13px; border-radius: 11px; font-size: 13.5px; }
     .opt.picked { border-color: var(--accent); background: var(--accent-soft); font-weight: 600; }
     .opt.correct { border-color: var(--ok); background: var(--ok-soft); color: var(--ok); font-weight: 600; }
     .opt.wrong { border-color: var(--err); background: var(--err-soft); color: var(--err); }
@@ -63,7 +63,7 @@
 <div class="wrap">
   <div class="header">
     <div class="tabs" id="tabs"></div>
-    <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">☀️</button>
+    <button class="theme-btn" id="themeBtn">☀️</button>
   </div>
   <div id="setupView">
     <div class="card">
@@ -74,169 +74,194 @@
         <div class="stat"><b id="sStar" style="color:var(--star)">0</b><span>Обране ★</span></div>
       </div>
       <div class="label">Питання</div>
-      <div class="grid-2">
-        <button class="pill active" data-pool="all" onclick="setPool('all',this)">Усі підряд</button>
-        <button class="pill" data-pool="shuffle" onclick="setPool('shuffle',this)">Упереміш</button>
-        <button class="pill" data-pool="errors" onclick="setPool('errors',this)">Помилки</button>
-        <button class="pill" data-pool="starred" onclick="setPool('starred',this)">Обране ★</button>
+      <div class="grid-2" id="poolGrid">
+        <button class="pill active" data-v="all">Усі підряд</button>
+        <button class="pill" data-v="shuffle">Упереміш</button>
+        <button class="pill" data-v="errors">Помилки</button>
+        <button class="pill" data-v="starred">Обране ★</button>
       </div>
       <div class="label">Режим</div>
-      <div class="grid-2">
-        <button class="pill active" data-mode="learn" onclick="setMode('learn',this)">Навчання</button>
-        <button class="pill" data-mode="exam" onclick="setMode('exam',this)">Контроль</button>
+      <div class="grid-2" id="modeGrid">
+        <button class="pill active" data-v="learn">Навчання</button>
+        <button class="pill" data-v="exam">Контроль</button>
       </div>
       <div class="label">Кількість</div>
       <div class="count-row">
         <input type="number" id="countInput" class="count-input" min="1" value="16" />
-        <button class="mini-btn" onclick="setCount(10)">10</button>
-        <button class="mini-btn" onclick="setCount(25)">25</button>
-        <button class="mini-btn" onclick="setAllCount()">Усі</button>
+        <button class="mini-btn" id="c10">10</button>
+        <button class="mini-btn" id="c25">25</button>
+        <button class="mini-btn" id="cAll">Усі</button>
       </div>
-      <button class="btn-main" onclick="startFeed()">Почати</button>
-      <button class="btn-sub" onclick="toggleDb()">Усі питання та відповіді</button>
+      <button class="btn-main" id="startBtn">Почати</button>
+      <button class="btn-sub" id="toggleDbBtn">Усі питання та відповіді</button>
     </div>
     <div class="card hidden" id="dbCard"><div id="dbList"></div></div>
   </div>
   <div id="feedView" class="hidden">
     <div class="sticky">
-      <button class="mini-btn" style="padding:5px 10px" onclick="goHome()">← Назад</button>
+      <button class="mini-btn" style="padding:5px 10px" id="backBtn">← Назад</button>
       <b id="ansCount" style="font-size:13px;color:var(--muted)">0 / 16</b>
       <b id="timerBox" style="font-size:14px;color:var(--accent)">00:00</b>
     </div>
     <div id="feedBox"></div>
-    <button class="btn-main" onclick="finishFeed()">Завершити</button>
+    <button class="btn-main" id="finishBtn">Завершити</button>
   </div>
   <div id="resultView" class="hidden">
     <div class="card">
       <h1>Результат</h1>
       <div id="resSum" style="color:var(--muted);font-size:14px;margin-bottom:14px"></div>
       <div id="resList"></div>
-      <button class="btn-main" style="margin-top:12px" onclick="goHome()">На головну</button>
+      <button class="btn-main" style="margin-top:12px" id="homeBtn">На головну</button>
     </div>
   </div>
 </div>
 <script>
-  if (window.Telegram && window.Telegram.WebApp) { Telegram.WebApp.ready(); Telegram.WebApp.expand(); }
+  if (window.Telegram && Telegram.WebApp) { Telegram.WebApp.ready(); Telegram.WebApp.expand(); }
   const DB = window.QUIZ_DB || {};
   let errors = new Set(JSON.parse(localStorage.getItem("q_err") || "[]"));
   let starred = new Set(JSON.parse(localStorage.getItem("q_star") || "[]"));
   let isLight = localStorage.getItem("q_theme") === "light";
-  let subject = Object.keys(DB)[0] || "Тести";
+  let subject = Object.keys(DB)[0] || "Медична фізика";
   let poolMode = "all", runMode = "learn", feed = [], answers = {}, sec = 0, timer = null;
 
-  function applyTheme() {
-    document.body.classList.toggle("light", isLight);
-    document.getElementById("themeBtn").textContent = isLight ? "🌙" : "☀️";
-  }
-  function toggleTheme() {
-    isLight = !isLight;
-    localStorage.setItem("q_theme", isLight ? "light" : "dark");
-    applyTheme();
-  }
+  const $ = id => document.getElementById(id);
   function save() {
     localStorage.setItem("q_err", JSON.stringify([...errors]));
     localStorage.setItem("q_star", JSON.stringify([...starred]));
   }
+  function applyTheme() {
+    document.body.classList.toggle("light", isLight);
+    $("themeBtn").textContent = isLight ? "🌙" : "☀️";
+  }
+  $("themeBtn").onclick = () => {
+    isLight = !isLight;
+    localStorage.setItem("q_theme", isLight ? "light" : "dark");
+    applyTheme();
+  };
   function renderTabs() {
-    document.getElementById("tabs").innerHTML = Object.keys(DB).map(s =>
-      `<button class="tab ${s===subject?'active':''}" onclick="subject='${s}';renderTabs();refresh()">${s}</button>`
+    $("tabs").innerHTML = Object.keys(DB).map(s =>
+      `<button class="tab ${s===subject?'active':''}" data-s="${s}">${s}</button>`
     ).join("");
+    $("tabs").querySelectorAll(".tab").forEach(b => b.onclick = () => {
+      subject = b.dataset.s; renderTabs(); refresh();
+    });
   }
   function refresh() {
     const list = DB[subject] || [];
-    document.getElementById("subjTitle").textContent = subject;
-    document.getElementById("sTotal").textContent = list.length;
-    document.getElementById("sErr").textContent = list.filter(x => errors.has(x.id)).length;
-    document.getElementById("sStar").textContent = list.filter(x => starred.has(x.id)).length;
-    document.getElementById("countInput").value = list.length;
-    document.getElementById("dbList").innerHTML = list.map((x, i) => `
+    $("subjTitle").textContent = subject;
+    $("sTotal").textContent = list.length;
+    $("sErr").textContent = list.filter(x => errors.has(x.id)).length;
+    $("sStar").textContent = list.filter(x => starred.has(x.id)).length;
+    $("countInput").value = list.length || 16;
+    $("dbList").innerHTML = list.map((x, i) => `
       <div class="db-item">
         <div style="display:flex;justify-content:space-between;gap:8px">
           <span><b>${i+1}.</b> ${x.q}</span>
-          <span class="star ${starred.has(x.id)?'on':''}" onclick="toggleStar('${x.id}',true)">${starred.has(x.id)?'★':'☆'}</span>
+          <span class="star ${starred.has(x.id)?'on':''}" data-id="${x.id}">${starred.has(x.id)?'★':'☆'}</span>
         </div>
         <div style="color:var(--ok);font-size:12.5px;font-weight:600;margin-top:4px">✓ ${x.opts[x.correct]}</div>
       </div>`).join("");
+    $("dbList").querySelectorAll(".star").forEach(s => s.onclick = () => {
+      const id = s.dataset.id;
+      starred.has(id) ? starred.delete(id) : starred.add(id);
+      save(); refresh();
+    });
   }
-  function setPool(p, b) { poolMode = p; document.querySelectorAll("[data-pool]").forEach(x=>x.classList.remove("active")); b.classList.add("active"); }
-  function setMode(m, b) { runMode = m; document.querySelectorAll("[data-mode]").forEach(x=>x.classList.remove("active")); b.classList.add("active"); }
-  function setCount(n) { document.getElementById("countInput").value = n; }
-  function setAllCount() { document.getElementById("countInput").value = (DB[subject]||[]).length; }
-  function toggleDb() { document.getElementById("dbCard").classList.toggle("hidden"); }
-  function toggleStar(id, fromSetup) {
-    starred.has(id) ? starred.delete(id) : starred.add(id);
-    save();
-    if (fromSetup) refresh();
-    else {
-      const el = document.getElementById("st_"+id);
-      if (el) { el.classList.toggle("on", starred.has(id)); el.textContent = starred.has(id) ? "★" : "☆"; }
-    }
-  }
-  function startFeed() {
+  $("poolGrid").querySelectorAll(".pill").forEach(b => b.onclick = () => {
+    poolMode = b.dataset.v;
+    $("poolGrid").querySelectorAll(".pill").forEach(x => x.classList.remove("active"));
+    b.classList.add("active");
+  });
+  $("modeGrid").querySelectorAll(".pill").forEach(b => b.onclick = () => {
+    runMode = b.dataset.v;
+    $("modeGrid").querySelectorAll(".pill").forEach(x => x.classList.remove("active"));
+    b.classList.add("active");
+  });
+  $("c10").onclick = () => $("countInput").value = 10;
+  $("c25").onclick = () => $("countInput").value = 25;
+  $("cAll").onclick = () => $("countInput").value = (DB[subject] || []).length;
+  $("toggleDbBtn").onclick = () => $("dbCard").classList.toggle("hidden");
+
+  $("startBtn").onclick = () => {
     let list = [...(DB[subject] || [])];
     if (poolMode === "errors") list = list.filter(x => errors.has(x.id));
     if (poolMode === "starred") list = list.filter(x => starred.has(x.id));
     if (poolMode !== "all") list.sort(() => Math.random() - 0.5);
     if (!list.length) return alert("Тут поки порожньо");
-    const lim = Math.max(1, Math.min(list.length, parseInt(document.getElementById("countInput").value) || list.length));
+    const lim = Math.max(1, Math.min(list.length, parseInt($("countInput").value) || list.length));
     feed = list.slice(0, lim); answers = {};
-    document.getElementById("setupView").classList.add("hidden");
-    document.getElementById("resultView").classList.add("hidden");
-    document.getElementById("feedView").classList.remove("hidden");
-    document.getElementById("ansCount").textContent = `0 / ${feed.length}`;
-    document.getElementById("feedBox").innerHTML = feed.map((x, i) => `
+    $("setupView").classList.add("hidden");
+    $("resultView").classList.add("hidden");
+    $("feedView").classList.remove("hidden");
+    $("ansCount").textContent = `0 / ${feed.length}`;
+    $("feedBox").innerHTML = feed.map((x, i) => `
       <div class="card">
         <div class="q-head">
           <span class="q-num">Питання ${i+1}</span>
-          <span class="star ${starred.has(x.id)?'on':''}" id="st_${x.id}" onclick="toggleStar('${x.id}')">${starred.has(x.id)?'★':'☆'}</span>
+          <span class="star ${starred.has(x.id)?'on':''}" data-id="${x.id}">${starred.has(x.id)?'★':'☆'}</span>
         </div>
         <div class="q-title">${x.q}</div>
         <div class="opts" id="op_${x.id}">
-          ${x.opts.map((o, oi) => `<button class="opt" onclick="pick('${x.id}',${oi})">${o}</button>`).join("")}
+          ${x.opts.map((o, oi) => `<button class="opt" data-id="${x.id}" data-oi="${oi}">${o}</button>`).join("")}
         </div>
       </div>`).join("");
-    clearInterval(timer); sec = 0;
+    $("feedBox").querySelectorAll(".star").forEach(s => s.onclick = () => {
+      const id = s.dataset.id;
+      starred.has(id) ? starred.delete(id) : starred.add(id);
+      save();
+      s.classList.toggle("on", starred.has(id));
+      s.textContent = starred.has(id) ? "★" : "☆";
+    });
+    $("feedBox").querySelectorAll(".opt").forEach(btn => btn.onclick = () => {
+      const id = btn.dataset.id, idx = Number(btn.dataset.oi);
+      const item = feed.find(x => x.id === id);
+      if (!item || (runMode === "learn" && answers[id] !== undefined)) return;
+      answers[id] = idx;
+      $("ansCount").textContent = `${Object.keys(answers).length} / ${feed.length}`;
+      $(`op_${id}`).querySelectorAll(".opt").forEach((b, i) => {
+        b.classList.remove("picked","correct","wrong");
+        if (runMode === "learn") {
+          if (i === item.correct) b.classList.add("correct");
+          else if (i === idx) b.classList.add("wrong");
+        } else if (i === idx) b.classList.add("picked");
+      });
+      if (runMode === "learn") { idx === item.correct ? errors.delete(id) : errors.add(id); save(); }
+    });
+    clearInterval(timer); sec = 0; $("timerBox").textContent = "00:00";
     timer = setInterval(() => {
       sec++;
-      document.getElementById("timerBox").textContent = `${String(Math.floor(sec/60)).padStart(2,"0")}:${String(sec%60).padStart(2,"0")}`;
+      $("timerBox").textContent = `${String(Math.floor(sec/60)).padStart(2,"0")}:${String(sec%60).padStart(2,"0")}`;
     }, 1000);
-    window.scrollTo(0,0);
-  }
-  function pick(id, idx) {
-    const item = feed.find(x => x.id === id);
-    if (!item || (runMode === "learn" && answers[id] !== undefined)) return;
-    answers[id] = idx;
-    document.getElementById("ansCount").textContent = `${Object.keys(answers).length} / ${feed.length}`;
-    document.querySelectorAll(`#op_${id} .opt`).forEach((b, i) => {
-      b.classList.remove("picked","correct","wrong");
-      if (runMode === "learn") {
-        if (i === item.correct) b.classList.add("correct");
-        else if (i === idx) b.classList.add("wrong");
-      } else if (i === idx) b.classList.add("picked");
-    });
-    if (runMode === "learn") { idx === item.correct ? errors.delete(id) : errors.add(id); save(); }
-  }
-  function finishFeed() {
+    window.scrollTo(0, 0);
+  };
+
+  $("finishBtn").onclick = () => {
     clearInterval(timer); let ok = 0;
-    document.getElementById("resList").innerHTML = feed.map((x, i) => {
+    $("resList").innerHTML = feed.map((x, i) => {
       const c = answers[x.id], isOk = c === x.correct;
       isOk ? (ok++, errors.delete(x.id)) : errors.add(x.id);
       return `<div class="db-item"><b>${i+1}.</b> ${x.q}<div style="margin-top:4px;font-size:13px;color:${isOk?'var(--ok)':'var(--err)'}">Відповідь: ${c!==undefined?x.opts[c]:'Пропущено'} ${isOk?'✓':'✕'}</div>${!isOk?`<div style="color:var(--ok);font-size:13px">Правильно: ${x.opts[x.correct]}</div>`:''}</div>`;
     }).join("");
     save();
-    document.getElementById("resSum").textContent = `Правильно: ${ok} з ${feed.length} (${Math.round(ok/feed.length*100)}%) • Час: ${document.getElementById("timerBox").textContent}`;
-    document.getElementById("feedView").classList.add("hidden");
-    document.getElementById("resultView").classList.remove("hidden");
-    window.scrollTo(0,0);
-  }
+    $("resSum").textContent = `Правильно: ${ok} з ${feed.length} (${Math.round(ok/feed.length*100)}%) • Час: ${$("timerBox").textContent}`;
+    $("feedView").classList.add("hidden");
+    $("resultView").classList.remove("hidden");
+    window.scrollTo(0, 0);
+  };
+
   function goHome() {
     clearInterval(timer);
-    document.getElementById("feedView").classList.add("hidden");
-    document.getElementById("resultView").classList.add("hidden");
-    document.getElementById("setupView").classList.remove("hidden");
+    $("feedView").classList.add("hidden");
+    $("resultView").classList.add("hidden");
+    $("setupView").classList.remove("hidden");
     refresh();
   }
+  $("backBtn").onclick = goHome;
+  $("homeBtn").onclick = goHome;
+
   applyTheme(); renderTabs(); refresh();
 </script>
 </body>
 </html>
+
+      
