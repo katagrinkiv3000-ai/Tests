@@ -117,7 +117,6 @@
     </div>
   </div>
 
-  <!-- 1. ГОЛОВНЕ МЕНЮ -->
   <div id="viewHome">
     <h1>Мої модулі</h1>
     <div class="sub-author">
@@ -131,14 +130,13 @@
     <div id="modulesList"></div>
   </div>
 
-  <!-- 2. СТОРІНКА МОДУЛЯ -->
   <div id="viewModule" class="hide">
     <button type="button" class="action-pill" style="margin-bottom:14px" id="backToHome">← Усі модулі</button>
     <h1 id="modTitle">Фізика • Модуль 1</h1>
     <div class="sub-author"><span id="modCountLbl">16 питань</span></div>
     <div class="pill-row">
       <button type="button" class="action-pill active" data-pool="all">Усі підряд</button>
-      <button type="button" class="action-pill" data-pool="shuffle">Упереміш</button>
+      <button type="button" class="action-pill" data-pool="shuffle">Упереміж</button>
       <button type="button" class="action-pill" data-pool="errors">Помилки</button>
       <button type="button" class="action-pill" data-pool="starred">Обране ★</button>
     </div>
@@ -168,7 +166,6 @@
     <div class="box hide" id="modDbBox" style="margin-top:12px"><div id="modDbList"></div></div>
   </div>
 
-  <!-- 3. СТРІЧКА ПИТАНЬ -->
   <div id="viewFeed" class="hide">
     <div class="feed-bar">
       <button type="button" class="chip" style="padding:6px 12px" id="exitFeed">✕</button>
@@ -179,7 +176,6 @@
     <button type="button" class="btn-primary" id="finishBtn">Завершити та перевірити</button>
   </div>
 
-  <!-- 4. РЕЗУЛЬТАТ -->
   <div id="viewResult" class="hide">
     <div class="box">
       <h1>Результат</h1>
@@ -189,7 +185,6 @@
     </div>
   </div>
 
-  <!-- 5. ПРОФІЛЬ -->
   <div id="viewProfile" class="hide">
     <h1>Профіль</h1>
     <div class="sub-author" id="profUser">Користувач Telegram</div>
@@ -215,8 +210,6 @@
         <div class="tile-sub">Точність</div>
       </div>
     </div>
-
-    <!-- ПРИХОВАНИЙ БЛОК ТІЛЬКИ ДЛЯ ТЕБЕ -->
     <div class="box hide" id="adminBox">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
         <span class="sec-lbl" style="margin:0">Хто проходив тести</span>
@@ -232,10 +225,8 @@
   <button type="button" class="nav-btn" data-nav="starred"><span class="nav-ico">★</span><span>Обране</span></button>
   <button type="button" class="nav-btn" data-nav="errors"><span class="nav-ico">❌</span><span>Помилки</span></button>
   <button type="button" class="nav-btn" data-nav="profile"><div class="nav-ava" id="navAva">K</div><span>Профіль</span></button>
-</nav>
-
-<script>
-// Сюди встав посилання /exec від Google Apps Script для тихого збору статистики
+          </nav>
+          <script>
 const LOG_URL = "";
 
 const DB = {
@@ -260,18 +251,21 @@ const DB = {
 };
 
 let err = new Set(JSON.parse(localStorage.getItem("qe2") || "[]"));
-let star = new Set(JSON.parse(localStorage.ge
 let star = new Set(JSON.parse(localStorage.getItem("qs2") || "[]"));
 let totalSolved = Number(localStorage.getItem("q_solved") || "0");
 let totalCorrect = Number(localStorage.getItem("q_corr") || "0");
 let theme = localStorage.getItem("q_palette") || "pink";
 let isOwner = localStorage.getItem("q_owner") === "1";
 
-let curMod = Object.keys(DB)[0], pool = "all", mode = "learn", feed = [], ans = {}, sec = 0, tmr = null;
-const g = id => document.getElementById(id);
+let curMod = Object.keys(DB)[0];
+let pool = "all";
+let mode = "learn";
+let feed = [];
+let ans = {};
+let sec = 0;
+let tmr = null;
 
-const shufBtn = document.querySelector('[data-pool="shuffle"]');
-if (shufBtn) shufBtn.textContent = "Упереміж";
+function g(id) { return document.getElementById(id); }
 
 function applyTheme(t) {
   theme = t;
@@ -280,7 +274,9 @@ function applyTheme(t) {
   if (t !== "light") document.body.classList.add(t);
   const icons = { light: "🤍", pink: "🌸", blue: "🩵", mint: "🌿", dark: "🖤" };
   g("themeToggle").textContent = icons[t] || "🎨";
-  document.querySelectorAll("[data-settheme]").forEach(b => b.classList.toggle("active", b.dataset.settheme === t));
+  document.querySelectorAll("[data-settheme]").forEach(b => {
+    b.classList.toggle("active", b.dataset.settheme === t);
+  });
 }
 
 function saveAll() {
@@ -291,13 +287,17 @@ function saveAll() {
 }
 
 function switchScreen(name) {
-  ["viewHome", "viewModule", "viewFeed", "viewResult", "viewProfile"].forEach(v => g(v).classList.add("hide"));
+  ["viewHome", "viewModule", "viewFeed", "viewResult", "viewProfile"].forEach(v => {
+    g(v).classList.add("hide");
+  });
   g(name).classList.remove("hide");
   window.scrollTo(0, 0);
 }
 
 function setNavActive(tab) {
-  document.querySelectorAll(".nav-btn").forEach(b => b.classList.toggle("active", b.dataset.nav === tab));
+  document.querySelectorAll(".nav-btn").forEach(b => {
+    b.classList.toggle("active", b.dataset.nav === tab);
+  });
 }
 
 function renderHome() {
@@ -306,12 +306,13 @@ function renderHome() {
   g("homeStarCnt").textContent = star.size;
   g("modulesList").innerHTML = Object.keys(DB).map(name => {
     const list = DB[name];
+    const errCnt = list.filter(x => err.has(x.id)).length;
     return `
       <div class="module-card tap" data-openmod="${name}">
         <div>
           <span class="mod-tag">МОДУЛЬ</span>
           <div class="mod-name">${name}</div>
-          <div class="mod-meta">${list.length} питань • Помилок: ${list.filter(x => err.has(x.id)).length}</div>
+          <div class="mod-meta">${list.length} питань • Помилок: ${errCnt}</div>
         </div>
         <div class="arrow-btn">→</div>
       </div>`;
@@ -344,6 +345,7 @@ function startQuiz(customList) {
     if (pool !== "all") l.sort(() => Math.random() - 0.5);
   }
   if (!l.length) return alert("Тут поки немає питань!");
+
   const lim = customList ? l.length : Math.max(1, Math.min(l.length, parseInt(g("cntInput").value) || l.length));
   feed = l.slice(0, lim);
   ans = {};
@@ -359,10 +361,15 @@ function startQuiz(customList) {
         ${x.o.map((opt, oi) => `<button type="button" class="opt-item" data-qid="${x.id}" data-oi="${oi}">${opt}</button>`).join("")}
       </div>
     </div>`).join("");
-  clearInterval(tmr); sec = 0; g("feedTimer").textContent = "00:00";
+
+  clearInterval(tmr);
+  sec = 0;
+  g("feedTimer").textContent = "00:00";
   tmr = setInterval(() => {
     sec++;
-    g("feedTimer").textContent = `${String(Math.floor(sec / 60)).padStart(2, "0")}:${String(sec % 60).padStart(2, "0")}`;
+    const mm = String(Math.floor(sec / 60)).padStart(2, "0");
+    const ss = String(sec % 60).padStart(2, "0");
+    g("feedTimer").textContent = `${mm}:${ss}`;
   }, 1000);
   switchScreen("viewFeed");
 }
@@ -377,17 +384,22 @@ function pickAnswer(id, idx) {
     if (mode === "learn") {
       if (i === it.c) b.classList.add("ok");
       else if (i === idx) b.classList.add("err");
-    } else if (i === idx) b.classList.add("pick");
+    } else if (i === idx) {
+      b.classList.add("pick");
+    }
   });
-  if (mode === "learn") { idx === it.c ? err.delete(id) : err.add(id); saveAll(); }
+  if (mode === "learn") {
+    idx === it.c ? err.delete(id) : err.add(id);
+    saveAll();
+  }
 }
 
 function sendSilentReport(ok, total, pct, timeStr) {
   if (!LOG_URL) return;
-  const u = window.Telegram?.WebApp?.initDataUnsafe?.user;
+  const u = window.Telegram && Telegram.WebApp && Telegram.WebApp.initDataUnsafe ? Telegram.WebApp.initDataUnsafe.user : null;
   const payload = {
     user: u ? `${u.first_name} ${u.last_name || ""}`.trim() : "Гість",
-    username: u?.username ? "@" + u.username : "без ніку",
+    username: u && u.username ? "@" + u.username : "без ніку",
     mod: curMod,
     score: `${ok}/${total}`,
     pct: `${pct}%`,
@@ -400,7 +412,8 @@ function finishQuiz() {
   clearInterval(tmr);
   let ok = 0;
   g("resBreakdown").innerHTML = feed.map((x, i) => {
-    const c = ans[x.id], isOk = c === x.c;
+    const c = ans[x.id];
+    const isOk = c === x.c;
     isOk ? (ok++, err.delete(x.id)) : err.add(x.id);
     return `
       <div class="row-item">
@@ -456,11 +469,27 @@ document.addEventListener("click", function (e) {
   }
   if (t.dataset.settheme) applyTheme(t.dataset.settheme);
   if (t.dataset.openmod) openModule(t.dataset.openmod);
-  if (t.id === "backToHome" || t.id === "afterResHome") { clearInterval(tmr); setNavActive("home"); renderHome(); switchScreen("viewHome"); }
-  if (t.id === "exitFeed") { clearInterval(tmr); switchScreen("viewModule"); }
-  if (t.dataset.pool) { pool = t.dataset.pool; document.querySelectorAll("[data-pool]").forEach(b => b.classList.toggle("active", b.dataset.pool === pool)); }
-  if (t.dataset.mode) { mode = t.dataset.mode; document.querySelectorAll("[data-mode]").forEach(b => b.classList.toggle("selected", b.dataset.mode === mode)); }
-  if (t.dataset.setcnt) g("cntInput").value = t.dataset.setcnt === "all" ? (DB[curMod] || []).length : t.dataset.setcnt;
+  if (t.id === "backToHome" || t.id === "afterResHome") {
+    clearInterval(tmr);
+    setNavActive("home");
+    renderHome();
+    switchScreen("viewHome");
+  }
+  if (t.id === "exitFeed") {
+    clearInterval(tmr);
+    switchScreen("viewModule");
+  }
+  if (t.dataset.pool) {
+    pool = t.dataset.pool;
+    document.querySelectorAll("[data-pool]").forEach(b => b.classList.toggle("active", b.dataset.pool === pool));
+  }
+  if (t.dataset.mode) {
+    mode = t.dataset.mode;
+    document.querySelectorAll("[data-mode]").forEach(b => b.classList.toggle("selected", b.dataset.mode === mode));
+  }
+  if (t.dataset.setcnt) {
+    g("cntInput").value = t.dataset.setcnt === "all" ? (DB[curMod] || []).length : t.dataset.setcnt;
+  }
   if (t.id === "startBtn") startQuiz();
   if (t.id === "toggleAllQ") g("modDbBox").classList.toggle("hide");
   if (t.dataset.qid) pickAnswer(t.dataset.qid, Number(t.dataset.oi));
@@ -470,29 +499,53 @@ document.addEventListener("click", function (e) {
   if (t.dataset.stardb) {
     const id = t.dataset.stardb;
     star.has(id) ? star.delete(id) : star.add(id);
-    saveAll(); openModule(curMod);
+    saveAll();
+    openModule(curMod);
   }
   if (t.dataset.starfeed) {
     const id = t.dataset.starfeed;
     star.has(id) ? star.delete(id) : star.add(id);
     saveAll();
     const el = g("st_" + id);
-    if (el) { el.classList.toggle("on", star.has(id)); el.textContent = star.has(id) ? "★" : "☆"; }
+    if (el) {
+      el.classList.toggle("on", star.has(id));
+      el.textContent = star.has(id) ? "★" : "☆";
+    }
   }
   if (t.dataset.quick === "errors" || t.dataset.nav === "errors") {
     setNavActive("errors");
     const list = Object.values(DB).flat().filter(x => err.has(x.id));
-    if (!list.length) { alert("Помилок поки немає!"); setNavActive("home"); return; }
-    mode = "learn"; startQuiz(list);
+    if (!list.length) {
+      alert("Помилок поки немає!");
+      setNavActive("home");
+      return;
+    }
+    mode = "learn";
+    startQuiz(list);
   }
   if (t.dataset.quick === "starred" || t.dataset.nav === "starred") {
     setNavActive("starred");
     const list = Object.values(DB).flat().filter(x => star.has(x.id));
-    if (!list.length) { alert("У вибраному поки порожньо!"); setNavActive("home"); return; }
-    mode = "learn"; startQuiz(list);
+    if (!list.length) {
+      alert("У вибраному поки порожньо!");
+      setNavActive("home");
+      return;
+    }
+    mode = "learn";
+    startQuiz(list);
   }
-  if (t.dataset.nav === "home") { clearInterval(tmr); setNavActive("home"); renderHome(); switchScreen("viewHome"); }
-  if (t.dataset.nav === "profile") { clearInterval(tmr); setNavActive("profile"); renderProfile(); switchScreen("viewProfile"); }
+  if (t.dataset.nav === "home") {
+    clearInterval(tmr);
+    setNavActive("home");
+    renderHome();
+    switchScreen("viewHome");
+  }
+  if (t.dataset.nav === "profile") {
+    clearInterval(tmr);
+    setNavActive("profile");
+    renderProfile();
+    switchScreen("viewProfile");
+  }
 });
 
 let profTaps = 0;
@@ -510,7 +563,7 @@ g("viewProfile").querySelector("h1").addEventListener("click", () => {
 if (window.Telegram && Telegram.WebApp) {
   Telegram.WebApp.ready();
   Telegram.WebApp.expand();
-  const u = Telegram.WebApp.initDataUnsafe?.user;
+  const u = Telegram.WebApp.initDataUnsafe ? Telegram.WebApp.initDataUnsafe.user : null;
   if (u && u.first_name) {
     g("profUser").textContent = `${u.first_name} ${u.last_name || ""}`.trim();
     g("authorName").textContent = `${u.first_name} • Медичний курс`;
