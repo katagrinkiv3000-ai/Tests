@@ -5,103 +5,76 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>MedTests</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script src="questions.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --bg: #f6f7fb; --card: #ffffff; --tile: #f0f2f8; --text: #1a1d28; --muted: #646b82;
-      --brand: #4255ff; --brand-s: rgba(66, 85, 255, 0.12); --brand-shd: rgba(66, 85, 255, 0.25);
-      --cyan: #00b8d9; --ok: #10b981; --ok-s: rgba(16, 185, 129, 0.14);
-      --err: #ef4444; --err-s: rgba(239, 68, 68, 0.14); --star: #f59e0b;
-      --brd: rgba(26, 29, 40, 0.07); --shd: 0 4px 16px rgba(26, 29, 40, 0.05);
-    }
-    body.dark {
-      --bg: #0d0f14; --card: #161922; --tile: #1f2330; --text: #f4f6fb; --muted: #8e96ad;
-      --brand: #6373ff; --brand-s: rgba(99, 115, 255, 0.18); --brand-shd: rgba(99, 115, 255, 0.3);
-      --cyan: #22d3ee; --ok: #10b981; --ok-s: rgba(16, 185, 129, 0.18);
-      --err: #f87171; --err-s: rgba(248, 113, 113, 0.18); --star: #fbbf24;
-      --brd: rgba(255, 255, 255, 0.08); --shd: 0 6px 20px rgba(0, 0, 0, 0.35);
-    }
-    body.pink {
-      --bg: #fff5f8; --card: #ffffff; --tile: #ffe8f0; --text: #2d1822; --muted: #8c6476;
-      --brand: #ec4899; --brand-s: rgba(236, 72, 153, 0.14); --brand-shd: rgba(236, 72, 153, 0.25);
-      --cyan: #f472b6; --ok: #10b981; --ok-s: rgba(16, 185, 129, 0.14);
-      --err: #e11d48; --err-s: rgba(225, 29, 72, 0.14); --star: #f59e0b;
-      --brd: rgba(236, 72, 153, 0.12); --shd: 0 4px 16px rgba(236, 72, 153, 0.08);
-    }
-    body.blue {
-      --bg: #f0f7ff; --card: #ffffff; --tile: #e0f0fe; --text: #0f2537; --muted: #58758f;
-      --brand: #0284c7; --brand-s: rgba(2, 132, 199, 0.13); --brand-shd: rgba(2, 132, 199, 0.25);
-      --cyan: #38bdf8; --ok: #059669; --ok-s: rgba(5, 150, 105, 0.14);
-      --err: #dc2626; --err-s: rgba(220, 38, 38, 0.14); --star: #f59e0b;
-      --brd: rgba(2, 132, 199, 0.12); --shd: 0 4px 16px rgba(2, 132, 199, 0.08);
-    }
-    body.mint {
-      --bg: #f2fbf7; --card: #ffffff; --tile: #e2f5ec; --text: #122920; --muted: #597a6c;
-      --brand: #0d9488; --brand-s: rgba(13, 148, 136, 0.13); --brand-shd: rgba(13, 148, 136, 0.25);
-      --cyan: #2dd4bf; --ok: #16a34a; --ok-s: rgba(22, 163, 74, 0.14);
-      --err: #dc2626; --err-s: rgba(220, 38, 38, 0.14); --star: #f59e0b;
-      --brd: rgba(13, 148, 136, 0.12); --shd: 0 4px 16px rgba(13, 148, 136, 0.08);
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
-    body { background: var(--bg); color: var(--text); padding: 14px 16px 92px; transition: background 0.2s, color 0.2s; }
-    button, .tap { cursor: pointer; user-select: none; }
-    .wrap { max-width: 560px; margin: 0 auto; }
-    .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
-    .logo { display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 20px; color: var(--brand); letter-spacing: -0.5px; }
-    .logo-badge { background: var(--brand); color: #fff; width: 30px; height: 30px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
-    .top-actions { display: flex; align-items: center; gap: 8px; }
-    .solved-pill { background: var(--card); border: 1px solid var(--brd); box-shadow: var(--shd); padding: 6px 12px; border-radius: 99px; font-size: 13px; font-weight: 800; display: flex; align-items: center; gap: 5px; }
-    .icon-circle { width: 36px; height: 36px; border-radius: 50%; background: var(--card); border: 1px solid var(--brd); box-shadow: var(--shd); display: flex; align-items: center; justify-content: center; font-size: 16px; color: var(--text); }
-    h1 { font-size: 24px; font-weight: 800; letter-spacing: -0.6px; line-height: 1.2; margin-bottom: 6px; }
-    .sub-author { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: var(--muted); margin-bottom: 16px; }
-    .mini-ava { width: 22px; height: 22px; border-radius: 50%; background: linear-gradient(135deg, var(--brand), var(--cyan)); color: #fff; font-size: 11px; font-weight: 800; display: flex; align-items: center; justify-content: center; }
-    .pill-row { display: flex; gap: 8px; overflow-x: auto; margin-bottom: 18px; padding-bottom: 2px; }
-    .action-pill { background: var(--card); border: 1px solid var(--brd); box-shadow: var(--shd); color: var(--text); padding: 9px 15px; border-radius: 99px; font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 6px; white-space: nowrap; }
-    .action-pill.active { background: var(--brand); color: #fff; border-color: var(--brand); }
-    .tiles-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 18px; }
-    .tile-card { background: var(--card); border: 1px solid var(--brd); box-shadow: var(--shd); border-radius: 18px; padding: 18px 14px; text-align: center; transition: transform 0.12s, border-color 0.15s; }
-    .tile-card:active { transform: scale(0.97); }
-    .tile-card.selected { border: 2px solid var(--brand); background: var(--brand-s); }
-    .tile-ico { width: 42px; height: 42px; border-radius: 12px; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; background: var(--brand-s); color: var(--brand); }
-    .tile-title { font-size: 14.5px; font-weight: 700; }
-    .tile-sub { font-size: 12px; color: var(--muted); margin-top: 3px; font-weight: 600; }
-    .module-card { background: var(--card); border: 1px solid var(--brd); box-shadow: var(--shd); border-radius: 20px; padding: 18px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
-    .module-card:active { transform: scale(0.98); }
-    .mod-tag { display: inline-block; background: var(--brand-s); color: var(--brand); font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 99px; margin-bottom: 6px; }
-    .mod-name { font-size: 17px; font-weight: 800; }
-    .mod-meta { font-size: 12.5px; color: var(--muted); margin-top: 4px; font-weight: 600; }
-    .arrow-btn { width: 38px; height: 38px; border-radius: 50%; background: var(--tile); display: flex; align-items: center; justify-content: center; font-weight: 800; color: var(--brand); }
-    .box { background: var(--card); border: 1px solid var(--brd); box-shadow: var(--shd); border-radius: 20px; padding: 16px; margin-bottom: 14px; }
-    .sec-lbl { font-size: 12px; font-weight: 700; color: var(--muted); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.4px; }
-    .cnt-row { display: flex; gap: 8px; }
-    .cnt-inp { width: 78px; background: var(--tile); border: none; border-radius: 14px; padding: 11px; font-size: 15px; font-weight: 800; color: var(--text); text-align: center; }
-    .chip { background: var(--tile); border: none; color: var(--text); padding: 11px 15px; border-radius: 14px; font-size: 13.5px; font-weight: 700; }
-    .btn-primary { width: 100%; background: var(--brand); color: #fff; border: none; padding: 15px; border-radius: 99px; font-size: 15.5px; font-weight: 800; box-shadow: 0 6px 18px var(--brand-shd); }
-    .feed-bar { position: sticky; top: 8px; z-index: 30; background: var(--card); border: 1px solid var(--brd); box-shadow: var(--shd); border-radius: 99px; padding: 8px 16px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
-    .q-card { background: var(--card); border: 1px solid var(--brd); box-shadow: var(--shd); border-radius: 22px; padding: 18px; margin-bottom: 14px; }
-    .q-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-    .q-badge { background: var(--tile); color: var(--muted); font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 99px; }
-    .q-text { font-size: 15.5px; font-weight: 700; line-height: 1.45; margin-bottom: 14px; white-space: pre-line; }
-    .star-btn { font-size: 22px; color: var(--muted); padding: 2px 6px; }
-    .star-btn.on { color: var(--star); }
-    .opt-list { display: flex; flex-direction: column; gap: 9px; }
-    .opt-item { width: 100%; text-align: left; background: var(--tile); color: var(--text); border: 2px solid transparent; padding: 13px 15px; border-radius: 15px; font-size: 14px; font-weight: 600; line-height: 1.35; }
-    .opt-item.pick { border-color: var(--brand); background: var(--brand-s); color: var(--brand); }
-    .opt-item.ok { border-color: var(--ok); background: var(--ok-s); color: var(--ok); }
-    .opt-item.err { border-color: var(--err); background: var(--err-s); color: var(--err); }
-    .theme-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-    .theme-opt { background: var(--tile); border: 2px solid transparent; border-radius: 14px; padding: 10px 6px; text-align: center; font-size: 12px; font-weight: 700; color: var(--text); }
-    .theme-opt.active { border-color: var(--brand); background: var(--brand-s); color: var(--brand); }
-    .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--card); border-top: 1px solid var(--brd); display: flex; justify-content: space-around; align-items: center; padding: 8px 6px 14px; z-index: 50; }
-    .nav-btn { background: none; border: none; color: var(--muted); display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 11px; font-weight: 700; min-width: 64px; }
-    .nav-btn.active { color: var(--brand); }
-    .nav-ico { font-size: 20px; line-height: 1; }
-    .nav-ava { width: 24px; height: 24px; border-radius: 50%; background: linear-gradient(135deg, var(--brand), var(--cyan)); color: #fff; font-size: 11px; font-weight: 800; display: flex; align-items: center; justify-content: center; }
-    .nav-btn.active .nav-ava { box-shadow: 0 0 0 2px var(--brand); }
-    .row-item { padding: 12px 0; border-bottom: 1px solid var(--brd); font-size: 13.5px; }
-    .row-item:last-child { border-bottom: none; }
-    .hide { display: none !important; }
+    :root { --bg:#f6f7fb; --card:#fff; --tile:#f0f2f8; --text:#1a1d28; --muted:#646b82; --brand:#4255ff; --brand-s:rgba(66,85,255,0.12); --brand-shd:rgba(66,85,255,0.25); --cyan:#00b8d9; --ok:#10b981; --ok-s:rgba(16,185,129,0.14); --err:#ef4444; --err-s:rgba(239,68,68,0.14); --star:#f59e0b; --brd:rgba(26,29,40,0.07); --shd:0 4px 16px rgba(26,29,40,0.05); }
+    body.dark { --bg:#0d0f14; --card:#161922; --tile:#1f2330; --text:#f4f6fb; --muted:#8e96ad; --brand:#6373ff; --brand-s:rgba(99,115,255,0.18); --brand-shd:rgba(99,115,255,0.3); --cyan:#22d3ee; --ok:#10b981; --ok-s:rgba(16,185,129,0.18); --err:#f87171; --err-s:rgba(248,113,113,0.18); --star:#fbbf24; --brd:rgba(255,255,255,0.08); --shd:0 6px 20px rgba(0,0,0,0.35); }
+    body.pink { --bg:#fff5f8; --card:#fff; --tile:#ffe8f0; --text:#2d1822; --muted:#8c6476; --brand:#ec4899; --brand-s:rgba(236,72,153,0.14); --brand-shd:rgba(236,72,153,0.25); --cyan:#f472b6; --ok:#10b981; --ok-s:rgba(16,185,129,0.14); --err:#e11d48; --err-s:rgba(225,29,72,0.14); --star:#f59e0b; --brd:rgba(236,72,153,0.12); --shd:0 4px 16px rgba(236,72,153,0.08); }
+    body.blue { --bg:#f0f7ff; --card:#fff; --tile:#e0f0fe; --text:#0f2537; --muted:#58758f; --brand:#0284c7; --brand-s:rgba(2,132,199,0.13); --brand-shd:rgba(2,132,199,0.25); --cyan:#38bdf8; --ok:#059669; --ok-s:rgba(5,150,105,0.14); --err:#dc2626; --err-s:rgba(220,38,38,0.14); --star:#f59e0b; --brd:rgba(2,132,199,0.12); --shd:0 4px 16px rgba(2,132,199,0.08); }
+    body.mint { --bg:#f2fbf7; --card:#fff; --tile:#e2f5ec; --text:#122920; --muted:#597a6c; --brand:#0d9488; --brand-s:rgba(13,148,136,0.13); --brand-shd:rgba(13,148,136,0.25); --cyan:#2dd4bf; --ok:#16a34a; --ok-s:rgba(22,163,74,0.14); --err:#dc2626; --err-s:rgba(220,38,38,0.14); --star:#f59e0b; --brd:rgba(13,148,136,0.12); --shd:0 4px 16px rgba(13,148,136,0.08); }
+    * { box-sizing:border-box; margin:0; padding:0; font-family:'Plus Jakarta Sans',-apple-system,sans-serif; -webkit-tap-highlight-color:transparent; touch-action:manipulation; }
+    body { background:var(--bg); color:var(--text); padding:14px 16px 92px; transition:background 0.2s,color 0.2s; }
+    button, .tap { cursor:pointer; user-select:none; }
+    .wrap { max-width:560px; margin:0 auto; }
+    .topbar { display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; }
+    .logo { display:flex; align-items:center; gap:7px; font-weight:800; font-size:20px; color:var(--brand); letter-spacing:-0.5px; }
+    .logo-badge { background:var(--brand); color:#fff; width:30px; height:30px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:16px; }
+    .pink-pig { display:none; font-size:19px; margin-left:2px; }
+    body.pink .pink-pig { display:inline-block; }
+    .top-actions { display:flex; align-items:center; gap:8px; }
+    .solved-pill { background:var(--card); border:1px solid var(--brd); box-shadow:var(--shd); padding:6px 12px; border-radius:99px; font-size:13px; font-weight:800; display:flex; align-items:center; gap:5px; }
+    .icon-circle { width:36px; height:36px; border-radius:50%; background:var(--card); border:1px solid var(--brd); box-shadow:var(--shd); display:flex; align-items:center; justify-content:center; font-size:16px; color:var(--text); }
+    h1 { font-size:24px; font-weight:800; letter-spacing:-0.6px; line-height:1.2; margin-bottom:6px; }
+    .sub-author { display:flex; align-items:center; gap:8px; font-size:13px; font-weight:600; color:var(--muted); margin-bottom:16px; }
+    .mini-ava { width:22px; height:22px; border-radius:50%; background:linear-gradient(135deg,var(--brand),var(--cyan)); color:#fff; font-size:11px; font-weight:800; display:flex; align-items:center; justify-content:center; }
+    .pill-row { display:flex; gap:8px; overflow-x:auto; margin-bottom:18px; padding-bottom:2px; }
+    .action-pill { background:var(--card); border:1px solid var(--brd); box-shadow:var(--shd); color:var(--text); padding:9px 15px; border-radius:99px; font-size:13px; font-weight:700; display:flex; align-items:center; gap:6px; white-space:nowrap; }
+    .action-pill.active { background:var(--brand); color:#fff; border-color:var(--brand); }
+    .tiles-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:18px; }
+    .tile-card { background:var(--card); border:1px solid var(--brd); box-shadow:var(--shd); border-radius:18px; padding:18px 14px; text-align:center; transition:transform 0.12s,border-color 0.15s; }
+    .tile-card:active { transform:scale(0.97); }
+    .tile-card.selected { border:2px solid var(--brand); background:var(--brand-s); }
+    .tile-ico { width:42px; height:42px; border-radius:12px; margin:0 auto 10px; display:flex; align-items:center; justify-content:center; font-size:20px; background:var(--brand-s); color:var(--brand); }
+    .tile-title { font-size:14.5px; font-weight:700; }
+    .tile-sub { font-size:12px; color:var(--muted); margin-top:3px; font-weight:600; }
+    .module-card { background:var(--card); border:1px solid var(--brd); box-shadow:var(--shd); border-radius:20px; padding:18px; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center; }
+    .module-card:active { transform:scale(0.98); }
+    .mod-tag { display:inline-block; background:var(--brand-s); color:var(--brand); font-size:11px; font-weight:800; padding:4px 10px; border-radius:99px; margin-bottom:6px; }
+    .mod-name { font-size:17px; font-weight:800; }
+    .mod-meta { font-size:12.5px; color:var(--muted); margin-top:4px; font-weight:600; }
+    .arrow-btn { width:38px; height:38px; border-radius:50%; background:var(--tile); display:flex; align-items:center; justify-content:center; font-weight:800; color:var(--brand); }
+    .box { background:var(--card); border:1px solid var(--brd); box-shadow:var(--shd); border-radius:20px; padding:16px; margin-bottom:14px; }
+    .sec-lbl { font-size:12px; font-weight:700; color:var(--muted); margin-bottom:10px; text-transform:uppercase; letter-spacing:0.4px; }
+    .cnt-row { display:flex; gap:8px; }
+    .cnt-inp { width:78px; background:var(--tile); border:none; border-radius:14px; padding:11px; font-size:15px; font-weight:800; color:var(--text); text-align:center; }
+    .chip { background:var(--tile); border:none; color:var(--text); padding:11px 15px; border-radius:14px; font-size:13.5px; font-weight:700; }
+    .btn-primary { width:100%; background:var(--brand); color:#fff; border:none; padding:15px; border-radius:99px; font-size:15.5px; font-weight:800; box-shadow:0 6px 18px var(--brand-shd); }
+    .feed-bar { position:sticky; top:8px; z-index:30; background:var(--card); border:1px solid var(--brd); box-shadow:var(--shd); border-radius:99px; padding:8px 16px; margin-bottom:16px; display:flex; justify-content:space-between; align-items:center; }
+    .q-card { background:var(--card); border:1px solid var(--brd); box-shadow:var(--shd); border-radius:22px; padding:18px; margin-bottom:14px; }
+    .q-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+    .q-badge { background:var(--tile); color:var(--muted); font-size:12px; font-weight:700; padding:4px 10px; border-radius:99px; }
+    .q-text { font-size:15.5px; font-weight:700; line-height:1.45; margin-bottom:14px; white-space:pre-line; }
+    .star-btn { font-size:22px; color:var(--muted); padding:2px 6px; }
+    .star-btn.on { color:var(--star); }
+    .opt-list { display:flex; flex-direction:column; gap:9px; }
+    .opt-item { width:100%; text-align:left; background:var(--tile); color:var(--text); border:2px solid transparent; padding:13px 15px; border-radius:15px; font-size:14px; font-weight:600; line-height:1.35; }
+    .opt-item.pick { border-color:var(--brand); background:var(--brand-s); color:var(--brand); }
+    .opt-item.ok { border-color:var(--ok); background:var(--ok-s); color:var(--ok); }
+    .opt-item.err { border-color:var(--err); background:var(--err-s); color:var(--err); }
+    .theme-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+    .theme-opt { background:var(--tile); border:2px solid transparent; border-radius:14px; padding:10px 6px; text-align:center; font-size:12px; font-weight:700; color:var(--text); }
+    .theme-opt.active { border-color:var(--brand); background:var(--brand-s); color:var(--brand); }
+    .bottom-nav { position:fixed; bottom:0; left:0; right:0; background:var(--card); border-top:1px solid var(--brd); display:flex; justify-content:space-around; align-items:center; padding:8px 6px 14px; z-index:50; }
+    .nav-btn { background:none; border:none; color:var(--muted); display:flex; flex-direction:column; align-items:center; gap:3px; font-size:11px; font-weight:700; min-width:64px; }
+    .nav-btn.active { color:var(--brand); }
+    .nav-ico { font-size:20px; line-height:1; }
+    .nav-ava { width:24px; height:24px; border-radius:50%; background:linear-gradient(135deg,var(--brand),var(--cyan)); color:#fff; font-size:11px; font-weight:800; display:flex; align-items:center; justify-content:center; }
+    .nav-btn.active .nav-ava { box-shadow:0 0 0 2px var(--brand); }
+    .row-item { padding:12px 0; border-bottom:1px solid var(--brd); font-size:13.5px; }
+    .row-item:last-child { border-bottom:none; }
+    .hide { display:none !important; }
   </style>
 </head>
 <body>
@@ -110,26 +83,22 @@
     <div class="logo">
       <div class="logo-badge">Q</div>
       <span>MedTests</span>
+      <span class="pink-pig">🐖</span>
     </div>
     <div class="top-actions">
-      <div class="solved-pill" title="Пройдено завдань">🐽 <span id="topSolved">0</span></div>
+      <div class="solved-pill" title="Пройдено завдань">💫 <span id="topSolved">0</span></div>
       <button type="button" class="icon-circle" id="themeToggle" title="Змінити тему">🎨</button>
     </div>
   </div>
-
   <div id="viewHome">
     <h1>Мої модулі</h1>
-    <div class="sub-author">
-      <div class="mini-ava" id="authorIni">K</div>
-      <span id="authorName">Медичний курс • 2026</span>
-    </div>
+    <div class="sub-author"><div class="mini-ava" id="authorIni">K</div><span id="authorName">Медичний курс • 2026</span></div>
     <div class="pill-row">
       <button type="button" class="action-pill" data-quick="errors">❌ Помилки (<span id="homeErrCnt">0</span>)</button>
       <button type="button" class="action-pill" data-quick="starred">★ Обране (<span id="homeStarCnt">0</span>)</button>
     </div>
     <div id="modulesList"></div>
   </div>
-
   <div id="viewModule" class="hide">
     <button type="button" class="action-pill" style="margin-bottom:14px" id="backToHome">← Усі модулі</button>
     <h1 id="modTitle">Фізика • Модуль 1</h1>
@@ -140,16 +109,8 @@
       <button type="button" class="action-pill" data-pool="starred">Обране ★</button>
     </div>
     <div class="tiles-grid">
-      <div class="tile-card selected tap" data-mode="learn">
-        <div class="tile-ico">🧠</div>
-        <div class="tile-title">Навчання</div>
-        <div class="tile-sub">Відповідь одразу</div>
-      </div>
-      <div class="tile-card tap" data-mode="exam">
-        <div class="tile-ico">📝</div>
-        <div class="tile-title">Контроль</div>
-        <div class="tile-sub">Оцінка в кінці</div>
-      </div>
+      <div class="tile-card selected tap" data-mode="learn"><div class="tile-ico">🧠</div><div class="tile-title">Навчання</div><div class="tile-sub">Відповідь одразу</div></div>
+      <div class="tile-card tap" data-mode="exam"><div class="tile-ico">📝</div><div class="tile-title">Контроль</div><div class="tile-sub">Оцінка в кінці</div></div>
     </div>
     <div class="box">
       <div class="sec-lbl">Кількість питань</div>
@@ -164,7 +125,6 @@
     <button type="button" class="action-pill" style="width:100%;justify-content:center;margin-top:10px" id="toggleAllQ">Переглянути базу питань</button>
     <div class="box hide" id="modDbBox" style="margin-top:12px"><div id="modDbList"></div></div>
   </div>
-
   <div id="viewFeed" class="hide">
     <div class="feed-bar">
       <button type="button" class="chip" style="padding:6px 12px" id="exitFeed">✕</button>
@@ -174,7 +134,6 @@
     <div id="feedList"></div>
     <button type="button" class="btn-primary" id="finishBtn">Завершити та перевірити</button>
   </div>
-
   <div id="viewResult" class="hide">
     <div class="box">
       <h1>Результат</h1>
@@ -183,7 +142,6 @@
       <button type="button" class="btn-primary" style="margin-top:14px" id="afterResHome">На головну</button>
     </div>
   </div>
-
   <div id="viewProfile" class="hide">
     <h1>Профіль</h1>
     <div class="sub-author" id="profUser">Користувач Telegram</div>
@@ -198,16 +156,8 @@
       </div>
     </div>
     <div class="tiles-grid">
-      <div class="tile-card">
-        <div class="tile-ico">🐽</div>
-        <div class="tile-title" id="profSolved">0</div>
-        <div class="tile-sub">Пройдено завдань</div>
-      </div>
-      <div class="tile-card">
-        <div class="tile-ico">🎯</div>
-        <div class="tile-title" id="profAcc">0%</div>
-        <div class="tile-sub">Точність</div>
-      </div>
+      <div class="tile-card"><div class="tile-ico">💫</div><div class="tile-title" id="profSolved">0</div><div class="tile-sub">Пройдено завдань</div></div>
+      <div class="tile-card"><div class="tile-ico">🎯</div><div class="tile-title" id="profAcc">0%</div><div class="tile-sub">Точність</div></div>
     </div>
     <div class="box hide" id="adminBox">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
@@ -218,361 +168,160 @@
     </div>
   </div>
 </div>
-
 <nav class="bottom-nav">
   <button type="button" class="nav-btn active" data-nav="home"><span class="nav-ico">🏠</span><span>Головна</span></button>
   <button type="button" class="nav-btn" data-nav="starred"><span class="nav-ico">★</span><span>Обране</span></button>
   <button type="button" class="nav-btn" data-nav="errors"><span class="nav-ico">❌</span><span>Помилки</span></button>
   <button type="button" class="nav-btn" data-nav="profile"><div class="nav-ava" id="navAva">K</div><span>Профіль</span></button>
-          </nav>
-          <script>
+</nav>
+<script>
 const LOG_URL = "";
-
-const DB = {
-  "Фізика • Модуль 1": [
-    { id: "mf1", q: "За якою формулою визначають коефіцієнт поляризації К?", o: ["K = ZА/Zв", "K = Zн/Zв", "K = ZВ/ZА", "K = Zв/Zн", "K = Zн/ZА"], c: 1 },
-    { id: "mf2", q: "Реограма – …, яка відповідає залежності … від часу:\n1) крива; 2) пряма; 3) гіпербола\nА) повного опору; Б) сили струму; В) напруги; Г) індуктивності", o: ["3-Г", "2-Б", "1-А", "1-Б", "2-В"], c: 2 },
-    { id: "mf3", q: "Загальний опір кола змінного струму – це імпеданс", o: ["ні", "так"], c: 1 },
-    { id: "mf4", q: "Вкажіть методи вимірювання електропровідності:\n1) містковий; 2) Ребіндера; 3) імпульсний; 4) імпедансний; 5) детекторний.", o: ["1), 3)", "1), 3), 5)", "1), 2), 5)", "2), 3), 5)", "4), 5)"], c: 1 },
-    { id: "mf5", q: "Реактивний опір тканини має розмірність:", o: ["Ом/А", "Дж/Кл.", "1Вт/А", "Ом", "(Вт/В)*(А/Вт)"], c: 3 },
-    { id: "mf6", q: "Під час систоли кров заповнює органи (тканини), тому імпеданс:", o: ["залишається незмінним", "зменшується до безкінечності", "збільшується", "збільшується до безкінечності", "зменшується"], c: 4 },
-    { id: "mf7", q: "Загальний опір кола змінного струму – це омічний опір", o: ["так", "ні"], c: 1 },
-    { id: "mf8", q: "Що називають коефіцієнтом поляризації?", o: ["відношення активного опору до реактивного;", "відношення імпедансу на високій частоті до імпедансу на низькій частоті;", "залежність показника заломлення від інтенсивності електромагнітної хвилі.", "залежність імпедансу від частоти;", "відношення імпедансу на низькій частоті до імпедансу на високій частоті;"], c: 4 },
-    { id: "mf9", q: "Крутизна фронту для імпульсів близьких до прямокутних визначається як:\n1. Imax; 2. Imax/2^(1/2); 3. 0,8·Imax; 4. поділити на; 5. помножити; 6. період Т; 7. тривалість імпульсу t імп.", o: ["1,4,7", "3,4,6", "2,5,6", "2,5,6 (варіант 2)", "3,4,7"], c: 4 },
-    { id: "mf10", q: "Загальна тривалість імпульсу, що дорівнює по амплітуді подвоєній реобазі, називається:", o: ["хронаксією", "реобазою", "часом релаксації", "акомодацією", "лабільністю"], c: 0 },
-    { id: "mf11", q: "Одним з параметрів імпульсного струму є коефіцієнт заповнення.", o: ["так", "ні"], c: 0 },
-    { id: "mf12", q: "Властивість збудливих тканин відповідати на подразнення тільки в певних межах частоти повторення імпульсів називається:", o: ["хронаксією", "реобазою", "акомодацією", "лабільністю", "електрозбудливістю"], c: 3 },
-    { id: "mf13", q: "Установіть відповідності:\n1) властивості тканин; 2) показники функціонального стану тканин; 3) основні параметри імпульсу\nА) крутизна фронту; Б) реобаза; В) лабільність; Г) амплітуда; Д) акомодація; Е) тривалість; Ж) хронаксія", o: ["1 Ж,Д; 2 Б,В; 3 А,Г", "1 А,Д; 2 Б,Е; 3 В,Г,Ж", "1 В,Д; 2 Б,А; 3 А,Е", "1 В,Д; 2 Б,Ж; 3 А,Г,Е", "1 В,Г; 2 Б,Ж; 3 А,Д,Е"], c: 3 },
-    { id: "mf14", q: "Подразнювальна дія імпульсного струму низької частоти залежить від амплітуди, частоти і форми імпульсу, конфігурації його переднього і заднього фронтів, тривалості імпульсів", o: ["так", "ні"], c: 0 },
-    { id: "mf15", q: "При зупинці роботи серця чи вирівнюванні фазового скорочення міокарда застосовують імпульси з такими параметрами:", o: ["Напруга до 220 В і сила струму до 20 мА", "Напруга до 380 В і сила струму до 1 А", "Напруга до 8 кВ і сила струму до 2 А", "Напруга до 8 кВ і сила струму до 100 мА", "Напруга до 380 В і сила струму до 100 мА"], c: 2 },
-    { id: "mf16", q: "Закон електрозбудливості називають законом:", o: ["Дюлонга - Пті", "Дюбуа-Реймона", "Герцшпрунга - Рассела", "Вебера – Фехнера", "Вейса – Лапіка"], c: 4 }
-  ]
-};
-
+const DB = window.QUIZ_DB || {};
 let err = new Set(JSON.parse(localStorage.getItem("qe2") || "[]"));
 let star = new Set(JSON.parse(localStorage.getItem("qs2") || "[]"));
 let totalSolved = Number(localStorage.getItem("q_solved") || "0");
 let totalCorrect = Number(localStorage.getItem("q_corr") || "0");
 let theme = localStorage.getItem("q_palette") || "pink";
 let isOwner = localStorage.getItem("q_owner") === "1";
-
-let curMod = Object.keys(DB)[0];
-let pool = "all";
-let mode = "learn";
-let feed = [];
-let ans = {};
-let sec = 0;
-let tmr = null;
-
-function g(id) { return document.getElementById(id); }
+let curMod = Object.keys(DB)[0] || "Фізика • Модуль 1", pool = "all", mode = "learn", feed = [], ans = {}, scoredSet = new Set(), sec = 0, tmr = null;
+const g = id => document.getElementById(id);
 
 function applyTheme(t) {
-  theme = t;
-  localStorage.setItem("q_palette", t);
+  theme = t; localStorage.setItem("q_palette", t);
   document.body.classList.remove("dark", "pink", "blue", "mint");
   if (t !== "light") document.body.classList.add(t);
   const icons = { light: "🤍", pink: "🌸", blue: "🩵", mint: "🌿", dark: "🖤" };
   g("themeToggle").textContent = icons[t] || "🎨";
-  document.querySelectorAll("[data-settheme]").forEach(b => {
-    b.classList.toggle("active", b.dataset.settheme === t);
-  });
+  document.querySelectorAll("[data-settheme]").forEach(b => b.classList.toggle("active", b.dataset.settheme === t));
 }
-
 function saveAll() {
   localStorage.setItem("qe2", JSON.stringify([...err]));
   localStorage.setItem("qs2", JSON.stringify([...star]));
   localStorage.setItem("q_solved", String(totalSolved));
   localStorage.setItem("q_corr", String(totalCorrect));
 }
-
 function switchScreen(name) {
-  ["viewHome", "viewModule", "viewFeed", "viewResult", "viewProfile"].forEach(v => {
-    g(v).classList.add("hide");
-  });
-  g(name).classList.remove("hide");
-  window.scrollTo(0, 0);
+  ["viewHome", "viewModule", "viewFeed", "viewResult", "viewProfile"].forEach(v => g(v).classList.add("hide"));
+  g(name).classList.remove("hide"); window.scrollTo(0, 0);
 }
-
 function setNavActive(tab) {
-  document.querySelectorAll(".nav-btn").forEach(b => {
-    b.classList.toggle("active", b.dataset.nav === tab);
-  });
+  document.querySelectorAll(".nav-btn").forEach(b => b.classList.toggle("active", b.dataset.nav === tab));
 }
-
 function renderHome() {
-  g("topSolved").textContent = totalSolved;
-  g("homeErrCnt").textContent = err.size;
-  g("homeStarCnt").textContent = star.size;
+  g("topSolved").textContent = totalSolved; g("homeErrCnt").textContent = err.size; g("homeStarCnt").textContent = star.size;
   g("modulesList").innerHTML = Object.keys(DB).map(name => {
     const list = DB[name];
-    const errCnt = list.filter(x => err.has(x.id)).length;
-    return `
-      <div class="module-card tap" data-openmod="${name}">
-        <div>
-          <span class="mod-tag">МОДУЛЬ</span>
-          <div class="mod-name">${name}</div>
-          <div class="mod-meta">${list.length} питань • Помилок: ${errCnt}</div>
-        </div>
-        <div class="arrow-btn">→</div>
-      </div>`;
+    return `<div class="module-card tap" data-openmod="${name}"><div><span class="mod-tag">МОДУЛЬ</span><div class="mod-name">${name}</div><div class="mod-meta">${list.length} питань • Помилок: ${list.filter(x => err.has(x.id)).length}</div></div><div class="arrow-btn">→</div></div>`;
   }).join("");
 }
-
 function openModule(name) {
-  curMod = name;
-  const list = DB[curMod] || [];
-  g("modTitle").textContent = curMod;
-  g("modCountLbl").textContent = `${list.length} питань у базі`;
-  g("cntInput").value = list.length;
-  g("modDbBox").classList.add("hide");
-  g("modDbList").innerHTML = list.map((x, i) => `
-    <div class="row-item">
-      <div style="display:flex;justify-content:space-between;gap:8px">
-        <span><b>${i + 1}.</b> ${x.q}</span>
-        <span class="star-btn ${star.has(x.id) ? "on" : ""}" data-stardb="${x.id}">${star.has(x.id) ? "★" : "☆"}</span>
-      </div>
-      <div style="color:var(--ok);font-size:12.5px;font-weight:700;margin-top:4px">✓ ${x.o[x.c]}</div>
-    </div>`).join("");
+  curMod = name; const list = DB[curMod] || [];
+  g("modTitle").textContent = curMod; g("modCountLbl").textContent = `${list.length} питань у базі`;
+  g("cntInput").value = list.length; g("modDbBox").classList.add("hide");
+  g("modDbList").innerHTML = list.map((x, i) => `<div class="row-item"><div style="display:flex;justify-content:space-between;gap:8px"><span><b>${i + 1}.</b> ${x.q}</span><span class="star-btn ${star.has(x.id) ? "on" : ""}" data-stardb="${x.id}">${star.has(x.id) ? "★" : "☆"}</span></div><div style="color:var(--ok);font-size:12.5px;font-weight:700;margin-top:4px">✓ ${x.o[x.c]}</div></div>`).join("");
   switchScreen("viewModule");
 }
-
 function startQuiz(customList) {
   let l = customList ? [...customList] : [...(DB[curMod] || [])];
   if (!customList) {
     if (pool === "errors") l = l.filter(x => err.has(x.id));
     if (pool === "starred") l = l.filter(x => star.has(x.id));
-    if (pool !== "all") l.sort(() => Math.random() - 0.5);
   }
   if (!l.length) return alert("Тут поки немає питань!");
-
   const lim = customList ? l.length : Math.max(1, Math.min(l.length, parseInt(g("cntInput").value) || l.length));
-  feed = l.slice(0, lim);
-  ans = {};
+  feed = l.slice(0, lim); ans = {}; scoredSet = new Set();
   g("feedProgress").textContent = `0 / ${feed.length}`;
-  g("feedList").innerHTML = feed.map((x, i) => `
-    <div class="q-card">
-      <div class="q-top">
-        <span class="q-badge">Питання ${i + 1} з ${feed.length}</span>
-        <span class="star-btn ${star.has(x.id) ? "on" : ""}" id="st_${x.id}" data-starfeed="${x.id}">${star.has(x.id) ? "★" : "☆"}</span>
-      </div>
-      <div class="q-text">${x.q}</div>
-      <div class="opt-list" id="op_${x.id}">
-        ${x.o.map((opt, oi) => `<button type="button" class="opt-item" data-qid="${x.id}" data-oi="${oi}">${opt}</button>`).join("")}
-      </div>
-    </div>`).join("");
-
-  clearInterval(tmr);
-  sec = 0;
-  g("feedTimer").textContent = "00:00";
-  tmr = setInterval(() => {
-    sec++;
-    const mm = String(Math.floor(sec / 60)).padStart(2, "0");
-    const ss = String(sec % 60).padStart(2, "0");
-    g("feedTimer").textContent = `${mm}:${ss}`;
-  }, 1000);
+  g("feedList").innerHTML = feed.map((x, i) => `<div class="q-card"><div class="q-top"><span class="q-badge">Питання ${i + 1} з ${feed.length}</span><span class="star-btn ${star.has(x.id) ? "on" : ""}" id="st_${x.id}" data-starfeed="${x.id}">${star.has(x.id) ? "★" : "☆"}</span></div><div class="q-text">${x.q}</div><div class="opt-list" id="op_${x.id}">${x.o.map((opt, oi) => `<button type="button" class="opt-item" data-qid="${x.id}" data-oi="${oi}">${opt}</button>`).join("")}</div></div>`).join("");
+  clearInterval(tmr); sec = 0; g("feedTimer").textContent = "00:00";
+  tmr = setInterval(() => { sec++; g("feedTimer").textContent = `${String(Math.floor(sec / 60)).padStart(2, "0")}:${String(sec % 60).padStart(2, "0")}`; }, 1000);
   switchScreen("viewFeed");
 }
-
 function pickAnswer(id, idx) {
   const it = feed.find(x => x.id === id);
   if (!it || (mode === "learn" && ans[id] !== undefined)) return;
   ans[id] = idx;
+  if (!scoredSet.has(id)) {
+    scoredSet.add(id);
+    totalSolved++;
+    if (idx === it.c) totalCorrect++;
+    g("topSolved").textContent = totalSolved;
+  }
   g("feedProgress").textContent = `${Object.keys(ans).length} / ${feed.length}`;
   g("op_" + id).querySelectorAll(".opt-item").forEach((b, i) => {
+  tem").forEach((b, i) => {
     b.classList.remove("pick", "ok", "err");
-    if (mode === "learn") {
-      if (i === it.c) b.classList.add("ok");
-      else if (i === idx) b.classList.add("err");
-    } else if (i === idx) {
-      b.classList.add("pick");
-    }
+    if (mode === "learn") { if (i === it.c) b.classList.add("ok"); else if (i === idx) b.classList.add("err"); }
+    else if (i === idx) b.classList.add("pick");
   });
-  if (mode === "learn") {
-    idx === it.c ? err.delete(id) : err.add(id);
-    saveAll();
-  }
-}
-
-function sendSilentReport(ok, total, pct, timeStr) {
-  if (!LOG_URL) return;
-  const u = window.Telegram && Telegram.WebApp && Telegram.WebApp.initDataUnsafe ? Telegram.WebApp.initDataUnsafe.user : null;
-  const payload = {
-    user: u ? `${u.first_name} ${u.last_name || ""}`.trim() : "Гість",
-    username: u && u.username ? "@" + u.username : "без ніку",
-    mod: curMod,
-    score: `${ok}/${total}`,
-    pct: `${pct}%`,
-    time: timeStr
-  };
-  fetch(LOG_URL, { method: "POST", mode: "no-cors", body: JSON.stringify(payload) }).catch(() => {});
-}
-
-function finishQuiz() {
-  clearInterval(tmr);
-  let ok = 0;
-  g("resBreakdown").innerHTML = feed.map((x, i) => {
-    const c = ans[x.id];
-    const isOk = c === x.c;
-    isOk ? (ok++, err.delete(x.id)) : err.add(x.id);
-    return `
-      <div class="row-item">
-        <b>${i + 1}.</b> ${x.q}
-        <div style="margin-top:4px;font-size:13px;font-weight:600;color:${isOk ? "var(--ok)" : "var(--err)"}">
-          Відповідь: ${c !== undefined ? x.o[c] : "Пропущено"} ${isOk ? "✓" : "✕"}
-        </div>
-        ${!isOk ? `<div style="color:var(--ok);font-size:13px;font-weight:600">Правильно: ${x.o[x.c]}</div>` : ""}
-      </div>`;
-  }).join("");
-
-  totalSolved += Object.keys(ans).length;
-  totalCorrect += ok;
+  if (mode === "learn") { idx === it.c ? err.delete(id) : err.add(id); }
   saveAll();
-  g("topSolved").textContent = totalSolved;
-
-  const pct = Math.round((ok / feed.length) * 100);
-  const timeStr = g("feedTimer").textContent;
-  sendSilentReport(ok, feed.length, pct, timeStr);
-
+}
+function finishQuiz() {
+  clearInterval(tmr); let ok = 0;
+  g("resBreakdown").innerHTML = feed.map((x, i) => {
+    const c = ans[x.id], isOk = c === x.c; isOk ? (ok++, err.delete(x.id)) : err.add(x.id);
+    return `<div class="row-item"><b>${i + 1}.</b> ${x.q}<div style="margin-top:4px;font-size:13px;font-weight:600;color:${isOk ? "var(--ok)" : "var(--err)"}">Відповідь: ${c !== undefined ? x.o[c] : "Пропущено"} ${isOk ? "✓" : "✕"}</div>${!isOk ? `<div style="color:var(--ok);font-size:13px;font-weight:600">Правильно: ${x.o[x.c]}</div>` : ""}</div>`;
+  }).join("");
+  saveAll();
+  const pct = Math.round((ok / feed.length) * 100), timeStr = g("feedTimer").textContent;
+  if (LOG_URL) {
+    const u = window.Telegram?.WebApp?.initDataUnsafe?.user;
+    fetch(LOG_URL, { method: "POST", mode: "no-cors", body: JSON.stringify({ user: u ? `${u.first_name} ${u.last_name || ""}`.trim() : "Гість", username: u?.username ? "@" + u.username : "без ніку", mod: curMod, score: `${ok}/${feed.length}`, pct: `${pct}%`, time: timeStr }) }).catch(() => {});
+  }
   g("resText").textContent = `Правильно: ${ok} з ${feed.length} (${pct}%) • Час: ${timeStr}`;
   switchScreen("viewResult");
 }
-
 function loadLogs() {
   if (!LOG_URL) return;
   g("othersList").innerHTML = `<div style="font-size:12.5px;color:var(--muted)">Завантаження...</div>`;
   fetch(LOG_URL).then(r => r.json()).then(rows => {
     const list = rows.slice(-20).reverse();
-    g("othersList").innerHTML = list.length
-      ? list.map(r => `<div class="row-item" style="font-size:12.5px"><b>${r[1]}</b> (${r[2]}) — ${r[3]}: <b>${r[4]} (${r[5]})</b> • ${r[6]}</div>`).join("")
-      : `<div style="font-size:12.5px;color:var(--muted)">Поки ніхто не проходив</div>`;
+    g("othersList").innerHTML = list.length ? list.map(r => `<div class="row-item" style="font-size:12.5px"><b>${r[1]}</b> (${r[2]}) — ${r[3]}: <b>${r[4]} (${r[5]})</b> • ${r[6]}</div>`).join("") : `<div style="font-size:12.5px;color:var(--muted)">Поки ніхто не проходив</div>`;
   }).catch(() => {});
 }
-
 function renderProfile() {
-  applyTheme(theme);
-  g("profSolved").textContent = totalSolved;
+  applyTheme(theme); g("profSolved").textContent = totalSolved;
   g("profAcc").textContent = totalSolved ? Math.round((totalCorrect / totalSolved) * 100) + "%" : "0%";
-  if (isOwner) {
-    g("adminBox").classList.remove("hide");
-    loadLogs();
-  }
+  if (isOwner) { g("adminBox").classList.remove("hide"); loadLogs(); }
 }
-
 document.addEventListener("click", function (e) {
   const t = e.target.closest("[data-openmod], [data-pool], [data-mode], [data-setcnt], [data-quick], [data-nav], [data-qid], [data-stardb], [data-starfeed], [data-settheme], button");
   if (!t) return;
-
-  if (t.id === "themeToggle") {
-    const order = ["pink", "blue", "mint", "light", "dark"];
-    applyTheme(order[(order.indexOf(theme) + 1) % order.length]);
-  }
+  if (t.id === "themeToggle") { const o = ["pink", "blue", "mint", "light", "dark"]; applyTheme(o[(o.indexOf(theme) + 1) % o.length]); }
   if (t.dataset.settheme) applyTheme(t.dataset.settheme);
   if (t.dataset.openmod) openModule(t.dataset.openmod);
-  if (t.id === "backToHome" || t.id === "afterResHome") {
-    clearInterval(tmr);
-    setNavActive("home");
-    renderHome();
-    switchScreen("viewHome");
-  }
-  if (t.id === "exitFeed") {
-    clearInterval(tmr);
-    switchScreen("viewModule");
-  }
-  if (t.dataset.pool) {
-    pool = t.dataset.pool;
-    document.querySelectorAll("[data-pool]").forEach(b => b.classList.toggle("active", b.dataset.pool === pool));
-  }
-  if (t.dataset.mode) {
-    mode = t.dataset.mode;
-    document.querySelectorAll("[data-mode]").forEach(b => b.classList.toggle("selected", b.dataset.mode === mode));
-  }
-  if (t.dataset.setcnt) {
-    g("cntInput").value = t.dataset.setcnt === "all" ? (DB[curMod] || []).length : t.dataset.setcnt;
-  }
+  if (t.id === "backToHome" || t.id === "afterResHome") { clearInterval(tmr); setNavActive("home"); renderHome(); switchScreen("viewHome"); }
+  if (t.id === "exitFeed") { clearInterval(tmr); switchScreen("viewModule"); }
+  if (t.dataset.pool) { pool = t.dataset.pool; document.querySelectorAll("[data-pool]").forEach(b => b.classList.toggle("active", b.dataset.pool === pool)); }
+  if (t.dataset.mode) { mode = t.dataset.mode; document.querySelectorAll("[data-mode]").forEach(b => b.classList.toggle("selected", b.dataset.mode === mode)); }
+  if (t.dataset.setcnt) g("cntInput").value = t.dataset.setcnt === "all" ? (DB[curMod] || []).length : t.dataset.setcnt;
   if (t.id === "startBtn") startQuiz();
   if (t.id === "toggleAllQ") g("modDbBox").classList.toggle("hide");
   if (t.dataset.qid) pickAnswer(t.dataset.qid, Number(t.dataset.oi));
   if (t.id === "finishBtn") finishQuiz();
   if (t.id === "refreshLogs") loadLogs();
-
-  if (t.dataset.stardb) {
-    const id = t.dataset.stardb;
-    star.has(id) ? star.delete(id) : star.add(id);
-    saveAll();
-    openModule(curMod);
-  }
-  if (t.dataset.starfeed) {
-    const id = t.dataset.starfeed;
-    star.has(id) ? star.delete(id) : star.add(id);
-    saveAll();
-    const el = g("st_" + id);
-    if (el) {
-      el.classList.toggle("on", star.has(id));
-      el.textContent = star.has(id) ? "★" : "☆";
-    }
-  }
-  if (t.dataset.quick === "errors" || t.dataset.nav === "errors") {
-    setNavActive("errors");
-    const list = Object.values(DB).flat().filter(x => err.has(x.id));
-    if (!list.length) {
-      alert("Помилок поки немає!");
-      setNavActive("home");
-      return;
-    }
-    mode = "learn";
-    startQuiz(list);
-  }
-  if (t.dataset.quick === "starred" || t.dataset.nav === "starred") {
-    setNavActive("starred");
-    const list = Object.values(DB).flat().filter(x => star.has(x.id));
-    if (!list.length) {
-      alert("У вибраному поки порожньо!");
-      setNavActive("home");
-      return;
-    }
-    mode = "learn";
-    startQuiz(list);
-  }
-  if (t.dataset.nav === "home") {
-    clearInterval(tmr);
-    setNavActive("home");
-    renderHome();
-    switchScreen("viewHome");
-  }
-  if (t.dataset.nav === "profile") {
-    clearInterval(tmr);
-    setNavActive("profile");
-    renderProfile();
-    switchScreen("viewProfile");
-  }
+  if (t.dataset.stardb) { const id = t.dataset.stardb; star.has(id) ? star.delete(id) : star.add(id); saveAll(); openModule(curMod); }
+  if (t.dataset.starfeed) { const id = t.dataset.starfeed; star.has(id) ? star.delete(id) : star.add(id); saveAll(); const el = g("st_" + id); if (el) { el.classList.toggle("on", star.has(id)); el.textContent = star.has(id) ? "★" : "☆"; } }
+  if (t.dataset.quick === "errors" || t.dataset.nav === "errors") { setNavActive("errors"); const l = Object.values(DB).flat().filter(x => err.has(x.id)); if (!l.length) { alert("Помилок поки немає!"); setNavActive("home"); return; } mode = "learn"; startQuiz(l); }
+  if (t.dataset.quick === "starred" || t.dataset.nav === "starred") { setNavActive("starred"); const l = Object.values(DB).flat().filter(x => star.has(x.id)); if (!l.length) { alert("У вибраному поки порожньо!"); setNavActive("home"); return; } mode = "learn"; startQuiz(l); }
+  if (t.dataset.nav === "home") { clearInterval(tmr); setNavActive("home"); renderHome(); switchScreen("viewHome"); }
+  if (t.dataset.nav === "profile") { clearInterval(tmr); setNavActive("profile"); renderProfile(); switchScreen("viewProfile"); }
 });
-
 let profTaps = 0;
 g("viewProfile").querySelector("h1").addEventListener("click", () => {
   profTaps++;
-  if (profTaps >= 5) {
-    isOwner = !isOwner;
-    localStorage.setItem("q_owner", isOwner ? "1" : "0");
-    g("adminBox").classList.toggle("hide", !isOwner);
-    if (isOwner) loadLogs();
-    profTaps = 0;
-  }
+  if (profTaps >= 5) { isOwner = !isOwner; localStorage.setItem("q_owner", isOwner ? "1" : "0"); g("adminBox").classList.toggle("hide", !isOwner); if (isOwner) loadLogs(); profTaps = 0; }
 });
-
 if (window.Telegram && Telegram.WebApp) {
-  Telegram.WebApp.ready();
-  Telegram.WebApp.expand();
-  const u = Telegram.WebApp.initDataUnsafe ? Telegram.WebApp.initDataUnsafe.user : null;
+  Telegram.WebApp.ready(); Telegram.WebApp.expand();
+  const u = Telegram.WebApp.initDataUnsafe?.user;
   if (u && u.first_name) {
     g("profUser").textContent = `${u.first_name} ${u.last_name || ""}`.trim();
     g("authorName").textContent = `${u.first_name} • Медичний курс`;
-    const ini = u.first_name[0].toUpperCase();
-    g("navAva").textContent = ini;
-    g("authorIni").textContent = ini;
+    const ini = u.first_name[0].toUpperCase(); g("navAva").textContent = ini; g("authorIni").textContent = ini;
   }
 }
-applyTheme(theme);
-renderHome();
+applyTheme(theme); renderHome();
 </script>
 </body>
 </html>
