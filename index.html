@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Тренажер тестів</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    :root {
+      --bg: var(--tg-theme-bg-color, #121214);
+      --card: var(--tg-theme-secondary-bg-color, #1e1e24);
+      --text: var(--tg-theme-text-color, #f4f4f6);
+      --hint: var(--tg-theme-hint-color, #8e8e98);
+      --btn: var(--tg-theme-button-color, #4f46e5);
+      --btn-text: var(--tg-theme-button-text-color, #ffffff);
+      --ok: #16a34a;
+      --ok-bg: rgba(22, 163, 74, 0.18);
+      --err: #dc2626;
+      --err-bg: rgba(220, 38, 38, 0.18);
+      --warn: #eab308;
+      --border: rgba(255, 255, 255, 0.08);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background: var(--bg); color: var(--text); padding: 14px; line-height: 1.45; }
+    .container { max-width: 680px; margin: 0 auto; }
+
+    /* Вкладки предметів */
+    .tabs { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 14px; border-bottom: 1px solid var(--border); }
+    .tab {
+      background: var(--card); color: var(--text); border: 1px solid var(--border);
+      padding: 8px 14px; border-radius: 20px; font-size: 14px; font-weight: 600;
+      white-space: nowrap; cursor: pointer; transition: 0.2s;
+    }
+    .tab.active { background: var(--btn); color: var(--btn-text); border-color: var(--btn); }
+
+    /* Картка налаштувань */
+    .card { background: var(--card); border-radius: 16px; padding: 16px; margin-bottom: 14px; border: 1px solid var(--border); }
+    h1 { font-size: 20px; margin-bottom: 6px; }
+    .subtitle { color: var(--hint); font-size: 13px; margin-bottom: 14px; }
+
+    .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 16px; text-align: center; }
+    .stat-box { background: var(--bg); padding: 10px 6px; border-radius: 12px; border: 1px solid var(--border); }
+    .stat-num { font-size: 18px; font-weight: 700; }
+    .stat-lbl { font-size: 11px; color: var(--hint); margin-top: 2px; }
+
+    .control-group { margin-bottom: 14px; }
+    .control-group label { display: block; font-size: 13px; color: var(--hint); margin-bottom: 6px; font-weight: 500; }
+
+    .radio-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .radio-btn {
+      background: var(--bg); border: 1px solid var(--border); color: var(--text);
+      padding: 10px; border-radius: 10px; font-size: 13px; font-weight: 600;
+      cursor: pointer; text-align: center;
+    }
+    .radio-btn.selected { border-color: var(--btn); background: rgba(79, 70, 229, 0.2); }
+
+    .row-inline { display: flex; gap: 10px; align-items: center; }
+    input[type="number"] {
+      width: 90px; padding: 10px; border-radius: 10px; border: 1px solid var(--border);
+      background: var(--bg); color: var(--text); font-size: 15px; font-weight: 600; text-align: center;
+    }
+    .chip-btn {
+      background: var(--bg); border: 1px solid var(--border); color: var(--text);
+      padding: 8px 12px; border-radius: 10px; font-size: 13px; cursor: pointer;
+    }
+
+    .primary-btn {
+      width: 100%; background: var(--btn); color: var(--btn-text); border: none;
+      padding: 14px; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; margin-top: 6px;
+    }
+    .secondary-btn {
+      width: 100%; background: var(--bg); color: var(--text); border: 1px solid var(--border);
+      padding: 12px; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; margin-top: 8px;
+    }
+
+    /* Екран тестування */
+    .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; gap: 8px; }
+    .progress-pill { background: var(--card); padding: 6px 12px; border-radius: 20px; font-size: 13px; font-weight: 600; }
+    .timer-pill {
+      background: var(--card); padding: 6px 12px; border-radius: 20px; font-size: 13px;
+      font-weight: 700; font-variant-numeric: tabular-nums; border: 1px solid var(--btn);
+    }
+    .star-btn {
+      background: var(--card); border: 1px solid var(--border); color: var(--hint);
+      padding: 6px 12px; border-radius: 20px; font-size: 13px; cursor: pointer; font-weight: 600;
+    }
+    .star-btn.starred { color: var(--warn); border-color: var(--warn); background: rgba(234, 179, 8, 0.12); }
+
+    .q-text { font-size: 16px; font-weight: 600; margin-bottom: 16px; white-space: pre-line; }
+
+    .options { display: flex; flex-direction: column; gap: 10px; }
+    .opt-btn {
+      width: 100%; text-align: left; background: var(--bg); color: var(--text);
+      border: 1px solid var(--border); padding: 13px 14px; border-radius: 12px;
+      font-size: 14px; cursor: pointer; transition: 0.15s; line-height: 1.35;
+    }
+    .opt-btn.selected-exam { border-color: var(--btn); background: rgba(79, 70, 229, 0.25); }
+    .opt-btn.correct { border-color: var(--ok); background: var(--ok-bg); color: #86efac; font-weight: 600; }
+    .opt-btn.wrong { border-color: var(--err); background: var(--err-bg); color: #fca5a5; }
+
+    .nav-row { display: flex; gap: 10px; margin-top: 16px; }
+    .hidden { display: none !important; }
+
+    /* Список усіх питань */
+    .q-list-item { padding: 12px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
+    .q-list-item:last-child { border-bottom: none; }
+    .q-ans-preview { color: #86efac; font-size: 13px; margin-top: 4px; }
+    .badge-err { color: #fca5a5; font-size: 11px; margin-left: 6px; }
+
+    /* Розбір результатів */
+    .review-item { background: var(--bg); padding: 12px; border-radius: 12px; margin-bottom: 10px; border: 1px solid var(--border); font-size: 13px; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <!-- Вкладки предметів -->
+  <div class="tabs" id="subjectTabs"></div>
+
+  <!-- Головний екран налаштувань -->
+  <div id="setupScreen">
+    <div class="card">
+      <h1 id="currentSubjectTitle">Медична фізика</h1>
+      <div class="subtitle">Обери режим, кількість питань або прожени складні місця</div>
+
+      <div class="stats-row">
+        <div class="stat-box">
+          <div class="stat-num" id="statTotal">0</div>
+          <div class="stat-lbl">Усього питань</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num" id="statErrors" style="color:#fca5a5">0</div>
+          <div class="stat-lbl">Мої помилки</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num" id="statStarred" style="color:#fde047">0</div>
+          <div class="stat-lbl">Погано знаю ★</div>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label>1. Звідки брати питання:</label>
+        <div class="radio-grid">
+          <button class="radio-btn selected" data-pool="all" onclick="selectPool('all', this)">Усі питання</button>
+          <button class="radio-btn" data-pool="errors" onclick="selectPool('errors', this)">Тільки помилки</button>
+          <button class="radio-btn" data-pool="starred" onclick="selectPool('starred', this)">Погано знаю ★</button>
+          <button class="radio-btn" data-pool="shuffle" onclick="selectPool('shuffle', this)">Усі впереміш</button>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label>2. Режим проходження:</label>
+        <div class="radio-grid">
+          <button class="radio-btn selected" data-mode="learn" onclick="selectMode('learn', this)">Навчання (одразу відповідь)</button>
+          <button class="radio-btn" data-mode="exam" onclick="selectMode('exam', this)">Контроль (відповідь в кінці)</button>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label>3. Скільки питань пройти:</label>
+        <div class="row-inline">
+          <input type="number" id="qCountInput" min="1" value="16" />
+          <button class="chip-btn" onclick="setCount(5)">5</button>
+          <button class="chip-btn" onclick="setCount(10)">10</button>
+          <button class="chip-btn" onclick="setMaxCount()">Усі</button>
+        </div>
+      </div>
+
+      <button class="primary-btn" onclick="startQuiz()">Почати тест</button>
+      <button class="secondary-btn" onclick="toggleAllQuestions()">Переглянути всі питання і відповіді</button>
+    </div>
+
+    <!-- База всіх питань предмета -->
+    <div class="card hidden" id="allQuestionsCard">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+        <strong>База питань предмета</strong>
+        <button class="chip-btn" onclick="toggleAllQuestions()">Сховати</button>
+      </div>
+      <div id="allQuestionsList"></div>
+    </div>
+  </div>
+
+  <!-- Екран проходження тесту -->
+  <div id="quizScreen" class="hidden">
+    <div class="top-bar">
+      <button class="chip-btn" onclick="exitQuiz()">✕ Вийти</button>
+      <div class="progress-pill" id="progressText">1 / 16</div>
+      <div class="timer-pill" id="timerDisplay">00:00</div>
+      <button class="star-btn" id="starToggleBtn" onclick="toggleCurrentStar()">☆ Складне</button>
+    </div>
+
+    <div class="card">
+      <div class="q-text" id="questionText"></div>
+      <div class="options" id="optionsContainer"></div>
+
+      <div class="nav-row">
+        <button class="secondary-btn" id="prevBtn" onclick="prevQuestion()" style="margin-top:0">← Назад</button>
+        <button class="primary-btn" id="nextBtn" onclick="nextQuestion()" style="margin-top:0">Далі →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Екран результатів -->
+  <div id="resultScreen" class="hidden">
+    <div class="card">
+      <h1>Результат тесту</h1>
+      <div class="subtitle" id="resultSummary"></div>
+      <div id="reviewContainer"></div>
+      <button class="primary-btn" onclick="exitQuiz()">На головну</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  if (window.Telegram && window.Telegram.WebApp) {
+    window.Telegram.WebApp.ready();
+    window.Telegram.WebApp.expand();
+  }
+
+  // === БАЗА ПИТАНЬ (можна додавати нові предмети та питання) ===
+  const QUIZ_DB = {
+    "Медична фізика": [
+      {
+        id: "mf_1",
+        q: "За якою формулою визначають коефіцієнт поляризації К?",
+        opts: ["K = ZА/Zв", "K = Zн/Zв", "K = ZВ/ZА", "K = Zв/Zн", "K = Zн/ZА"],
+        correct: 1
+      },
+      {
+        id: "mf_2",
+        q: "Реограма – …, яка відповідає залежності … від часу:\n1) крива; 2) пряма; 3) гіпербола\nА) повного опору; Б) сили струму; В) напруги; Г) індуктивності",
+        opts: ["3-Г", "2-Б", "1-А", "1-Б", "2-В"],
+        correct: 2
+      },
+      {
+        id: "mf_3",
+        q: "Загальний опір кола змінного струму – це імпеданс",
+        opts: ["ні", "так"],
+        correct: 1
+      },
+      {
+        id: "mf_4",
+        q: "Вкажіть методи вимірювання електропровідності:\n1) містковий; 2) Ребіндера; 3) імпульсний; 4) імпедансний; 5) детекторний.",
+        opts: ["1), 3)", "1), 3), 5)", "1), 2), 5)", "2), 3), 5)", "4), 5)"],
+        correct: 1
+      },
+      {
+        id: "mf_5",
+        q: "Реактивний опір тканини має розмірність:",
+        opts: ["Ом/А", "Дж/Кл.", "1Вт/А", "Ом", "(Вт/В)*(А/Вт)"],
+        correct: 3
+      },
+      {
+        id: "mf_6",
+        q: "Під час систоли кров заповнює органи (тканини), тому імпеданс:",
+        opts: ["залишається незмінним", "зменшується до безкінечності", "збільшується", "збільшується до безкінечності", "зменшується"],
+        correct: 4
+      },
+      {
+        id: "mf_7",
+        q: "Загальний опір кола змінного струму – це омічний опір",
+        opts: ["так", "ні"],
+        correct: 1
+      },
+      {
+        id: "mf_8",
+        q: "Що називають коефіцієнтом поляризації?",
+        opts: [
+          "відношення активного опору до реактивного;",
+          "відношення імпедансу на високій частоті до імпедансу на низькій частоті;",
+          "залежність показника заломлення від інтенсивності електромагнітної хвилі.",
+          "залежність імпедансу від частоти;",
+          "відношення імпедансу на низькій частоті до імпедансу на високій частоті;"
+        ],
+        correct: 4
+      },
+      {
+        id: "mf_9",
+        q: "Крутизна фронту для імпульсів близьких до прямокутних визначається як:\n1. Imax; 2. Imax/2^(1/2); 3. 0,8·Imax; 4. поділити на; 5. помножити; 6. період Т; 7. тривалість імпульсу t імп.",
+        opts: ["1,4,7", "3,4,6", "2,5,6", "2,5,6 (варіант 2)", "3,4,7"],
+        correct: 4
+      },
+      {
+        id: "mf_10",
+        q: "Загальна тривалість імпульсу, що дорівнює по амплітуді подвоєній реобазі, називається:",
+        opts: ["хронаксією", "реобазою", "часом релаксації", "акомодацією", "лабільністю"],
+        correct: 0
+      },
+      {
+        id: "mf_11",
+        q: "Одним з параметрів імпульсного струму є коефіцієнт заповнення.",
+        opts: ["так", "ні"],
+        correct: 0
+      },
+      {
+        id: "mf_12",
+        q: "Властивість збудливих тканин відповідати на подразнення тільки в певних межах частоти повторення імпульсів називається:",
+        opts: ["хронаксією", "реобазою", "акомодацією", "лабільністю", "електрозбудливістю"],
+        correct: 3
+      },
+      {
+        id: "mf_13",
+        q: "Установіть відповідності:\n1) властивості тканин; 2) показники функціонального стану тканин; 3) основні параметри імпульсу\nА) крутизна фронту; Б) реобаза; В) лабільність; Г) амплітуда; Д) акомодація; Е) тривалість; Ж) хронаксія",
+        opts: [
+          "1 Ж,Д; 2 Б,В; 3 А,Г",
+          "1 А,Д; 2 Б,Е; 3 В,Г,Ж",
+          "1 В,Д; 2 Б,А; 3 А,Е",
+          "1 В,Д; 2 Б,Ж; 3 А,Г,Е",
+          "1 В,Г; 2 Б,Ж; 3 А,Д,Е"
+        ],
+        correct: 3
+      },
+      {
+        id: "mf_14",
+        q: "Подразнювальна дія імпульсного струму низької частоти залежить від амплітуди, частоти і форми імпульсу, конфігурації його переднього і заднього фронтів, тривалості імпульсів",
+        opts: ["так", "ні"],
+        correct: 0
+      },
+      {
+        id: "mf_15",
+        q: "При зупинці роботи серця чи вирівнюванні фазового скорочення міокарда застосовують імпульси з такими параметрами:",
+        opts: [
+          "Напруга до 220 В і сила струму до 20 мА",
+          "Напруга до 380 В і сила струму до 1 А",
+          "Напруга до 8 кВ і сила струму до 2 А",
+          "Напруга до 8 кВ і сила струму до 100 мА",
+          "Напруга до 380 В і сила струму до 100 мА"
+        ],
+        correct: 2
+      },
+      {
+        id: "mf_16",
+        q: "Закон електрозбудливості називають законом:",
+        opts: ["Дюлонга - Пті", "Дюбуа-Реймона", "Герцшпрунга - Рассела", "Вебера – Фехнера", "Вейса – Лапіка"],
+        correct: 4
+      }
+    ]
+  };
+
+  // Збереження прогресу в браузері
+  let errorIds = new Set(JSON.parse(localStorage.getItem("quiz_errors") || "[]"));
+  let starredIds = new Set(JSON.parse(localStorage.getItem("quiz_starred") || "[]"));
+
+  function saveStorage() {
+    localStorage.setItem("quiz_errors", JSON.stringify([...errorIds]));
+    localStorage.setItem("quiz_starred", JSON.stringify([...starredIds]));
+  }
+
+  let currentSubject = Object.keys(QUIZ_DB)[0];
+  let selectedPool = "all";
+  let selectedMode = "learn";
+
+  let activeQuestions = [];
+  let userAnswers = [];
+  let currentIndex = 0;
+  let timerInterval = null;
+  let secondsElapsed = 0;
+
+  function initTabs() {
+    const tabsEl = document.getElementById("subjectTabs");
+    tabsEl.innerHTML = "";
+    Object.keys(QUIZ_DB).forEach(subj => {
+      const btn = document.createElement("button");
+      btn.className = "tab" + (subj === currentSubject ? " active" : "");
+      btn.textContent = subj;
+      btn.onclick = () => {
+        currentSubject = subj;
+        initTabs();
+        updateSetupStats();
+      };
+      tabsEl.appendChild(btn);
+    });
+  }
+
+  function updateSetupStats() {
+    const list = QUIZ_DB[currentSubject] || [];
+    document.getElementById("currentSubjectTitle").textContent = currentSubject;
+    document.getElementById("statTotal").textContent = list.length;
+    document.getElementById("statErrors").textContent = list.filter(q => errorIds.has(q.id)).length;
+    document.getElementById("statStarred").textContent = list.filter(q => starredIds.has(q.id)).length;
+    document.getElementById("qCountInput").value = list.length;
+    renderAllQuestionsList();
+  }
+
+  function selectPool(pool, btn) {
+    selectedPool = pool;
+    document.querySelectorAll("[data-pool]").forEach(b => b.classList.remove("selected"));
+    btn.classList.add("selected");
+  }
+
+  function selectMode(mode, btn) {
+    selectedMode = mode;
+    document.querySelectorAll("[data-mode]").forEach(b => b.classList.remove("selected"));
+    btn.classList.add("selected");
+  }
+
+  function setCount(n) { document.getElementById("qCountInput").value = n; }
+  function setMaxCount() { document.getElementById("qCountInput").value = (QUIZ_DB[currentSubject] || []).length; }
+
+  function toggleAllQuestions() {
+    document.getElementById("allQuestionsCard").classList.toggle("hidden");
+  }
+
+  function renderAllQuestionsList() {
+    const container = document.getElementById("allQuestionsList");
+    const list = QUIZ_DB[currentSubject] || [];
+    container.innerHTML = list.map((item, idx) => {
+      const isStar = starredIds.has(item.id);
+      const isErr = errorIds.has(item.id);
+      return `
+        <div class="q-list-item">
+          <div style="display:flex; justify-content:space-between; gap:8px;">
+            <span><strong>${idx + 1}.</strong> ${item.q} ${isErr ? '<span class="badge-err">[була помилка]</span>' : ''}</span>
+            <span style="cursor:pointer; font-size:18px; color:${isStar ? '#fde047' : '#8e8e98'}" onclick="toggleStarById('${item.id}')">${isStar ? '★' : '☆'}</span>
+          </div>
+          <div class="q-ans-preview">✓ ${item.opts[item.correct]}</div>
+        </div>
+      `;
+    }).join("");
+  }
+
+  function toggleStarById(id) {
+    if (starredIds.has(id)) starredIds.delete(id);
+    else starredIds.add(id);
+    saveStorage();
+    updateSetupStats();
+  }
+
+  function startQuiz() {
+    let pool = [...(QUIZ_DB[currentSubject] || [])];
+    if (selectedPool === "errors") pool = pool.filter(q => errorIds.has(q.id));
+    if (selectedPool === "starred") pool = pool.filter(q => starredIds.has(q.id));
+    if (selectedPool === "shuffle" || selectedPool === "errors" || selectedPool === "starred") {
+      pool.sort(() => Math.random() - 0.5);
+    }
+
+    if (pool.length === 0) {
+      alert("У цій категорії поки немає питань!");
+      return;
+    }
+
+    const count = Math.max(1, Math.min(pool.length, parseInt(document.getElementById("qCountInput").value) || pool.length));
+    activeQuestions = pool.slice(0, count);
+    userAnswers = new Array(activeQuestions.length).fill(null);
+    currentIndex = 0;
+
+    document.getElementById("setupScreen").classList.add("hidden");
+    document.getElementById("resultScreen").classList.add("hidden");
+    document.getElementById("quizScreen").classList.remove("hidden");
+
+    startTimer();
+    renderQuestion();
+  }
+
+  function startTimer() {
+    clearInterval(timerInterval);
+    secondsElapsed = 0;
+    updateTimerDisplay();
+    timerInterval = setInterval(() => {
+      secondsElapsed++;
+      updateTimerDisplay();
+    }, 1000);
+  }
+
+  function updateTimerDisplay() {
+    const m = String(Math.floor(secondsElapsed / 60)).padStart(2, "0");
+    const s = String(secondsElapsed % 60).padStart(2, "0");
+    document.getElementById("timerDisplay").textContent = `${m}:${s}`;
+  }
+
+  function renderQuestion() {
+    const qObj = activeQuestions[currentIndex];
+    document.getElementById("progressText").textContent = `${currentIndex + 1} / ${activeQuestions.length}`;
+    document.getElementById("questionText").textContent = qObj.q;
+
+    const starBtn = document.getElementById("starToggleBtn");
+    const isStarred = starredIds.has(qObj.id);
+    starBtn.textContent = isStarred ? "★ Складне" : "☆ Складне";
+    starBtn.classList.toggle("starred", isStarred);
+
+    const optsEl = document.getElementById("option
